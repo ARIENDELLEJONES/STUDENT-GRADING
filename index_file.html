@@ -1,0 +1,2841 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #264653;
+      --secondary: #2a9d8f;
+      --accent: #e9c46a;
+      --accent2: #f4a261;
+      --accent3: #e76f51;
+      --bg: #f8fafb;
+      --card: #ffffff;
+      --text: #1a2b3c;
+      --muted: #6b7c8d;
+      --danger: #dc3545;
+      --success: #28a745;
+      --warning: #ffc107;
+      --border: #e1e8ee;
+      --shadow: 0 10px 40px rgba(38, 70, 83, 0.1);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* App Shell */
+    .app-shell {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 30px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .brand-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+    }
+
+    .brand h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .brand p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-badge {
+      text-align: right;
+    }
+
+    .user-badge .name {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .user-badge .role {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: none;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 24px;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    .card h2 {
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card h2 i {
+      color: var(--secondary);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin: 20px 0 15px 0;
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .grid-5 {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    /* Form Elements */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    input, select, textarea {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(42, 157, 143, 0.15);
+    }
+
+    input::placeholder {
+      color: #b0bec5;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d3a47;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #248b7f;
+      transform: translateY(-1px);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: var(--primary);
+    }
+
+    .btn-accent:hover {
+      background: #ddb95a;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-small {
+      padding: 8px 14px;
+      font-size: 0.85rem;
+    }
+
+    .btn-large {
+      padding: 16px 32px;
+      font-size: 1.1rem;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .toolbar-right {
+      justify-content: flex-end;
+    }
+
+    /* Navigation */
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px;
+      background: #f0f4f7;
+      border-radius: var(--radius);
+    }
+
+    .nav-tabs .nav-btn {
+      padding: 12px 20px;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-tabs .nav-btn:hover {
+      background: rgba(42, 157, 143, 0.1);
+      color: var(--secondary);
+    }
+
+    .nav-tabs .nav-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .nav-tabs .nav-btn i {
+      font-size: 1.1rem;
+    }
+
+    /* Sections */
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* Login Section */
+    .login-container {
+      max-width: 500px;
+      margin: 100px auto;
+    }
+
+    .login-card {
+      text-align: center;
+    }
+
+    .login-card .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 36px;
+      margin: 0 auto 20px;
+    }
+
+    .login-card h2 {
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 50px;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    /* Database Cards */
+    .db-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .db-card {
+      padding: 20px;
+      background: linear-gradient(135deg, #f8fafb, #ffffff);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .db-card:hover {
+      border-color: var(--secondary);
+      transform: translateX(5px);
+      box-shadow: 0 5px 20px rgba(42, 157, 143, 0.15);
+    }
+
+    .db-card.selected {
+      border-color: var(--secondary);
+      background: rgba(42, 157, 143, 0.05);
+    }
+
+    .db-card i {
+      font-size: 2rem;
+      color: var(--secondary);
+    }
+
+    .db-card-content {
+      flex: 1;
+      text-align: left;
+    }
+
+    .db-card strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+
+    .db-card small {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tr:hover {
+      background: #f8fafb;
+    }
+
+    tr:nth-child(even) {
+      background: #fafbfc;
+    }
+
+    /* Tags & Badges */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .tag-primary {
+      background: rgba(38, 70, 83, 0.1);
+      color: var(--primary);
+    }
+
+    .tag-success {
+      background: rgba(40, 167, 69, 0.1);
+      color: var(--success);
+    }
+
+    .tag-danger {
+      background: rgba(220, 53, 69, 0.1);
+      color: var(--danger);
+    }
+
+    .tag-warning {
+      background: rgba(255, 193, 7, 0.1);
+      color: #856404;
+    }
+
+    .tag-info {
+      background: rgba(42, 157, 143, 0.1);
+      color: var(--secondary);
+    }
+
+    /* Alerts */
+    .alert {
+      padding: 16px 20px;
+      border-radius: var(--radius-sm);
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .alert-danger {
+      background: rgba(220, 53, 69, 0.1);
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
+    }
+
+    .alert-success {
+      background: rgba(40, 167, 69, 0.1);
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+
+    .alert-warning {
+      background: rgba(255, 193, 7, 0.15);
+      color: #856404;
+      border-left: 4px solid var(--warning);
+    }
+
+    .alert-info {
+      background: rgba(42, 157, 143, 0.1);
+      color: var(--secondary);
+      border-left: 4px solid var(--secondary);
+    }
+
+    .alert i {
+      font-size: 1.3rem;
+    }
+
+    /* Notification Cards */
+    .notification-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .notification-card {
+      padding: 18px;
+      background: linear-gradient(135deg, #ffffff, #f8fafb);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .notification-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(233, 196, 106, 0.2);
+    }
+
+    .notification-card strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    .notification-card small {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* Flash Message */
+    .flash {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--secondary);
+      color: white;
+      padding: 16px 24px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 40px rgba(42, 157, 143, 0.3);
+      z-index: 9999;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+    }
+
+    .flash.error {
+      background: var(--danger);
+    }
+
+    /* Download Buttons */
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .download-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 25px 20px;
+      background: linear-gradient(135deg, #f8fafb, #ffffff);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .download-btn:hover {
+      border-color: var(--secondary);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(42, 157, 143, 0.2);
+    }
+
+    .download-btn i {
+      font-size: 2.5rem;
+      color: var(--secondary);
+    }
+
+    .download-btn span {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .download-btn small {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    /* Access Banner */
+    .access-banner {
+      padding: 15px 20px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .access-banner.view-only {
+      background: rgba(255, 193, 7, 0.15);
+      color: #856404;
+      border: 1px solid var(--warning);
+    }
+
+    .access-banner.edit {
+      background: rgba(40, 167, 69, 0.1);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .access-banner.unauthorized {
+      background: rgba(220, 53, 69, 0.1);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    /* Score Editor */
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .score-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .score-item label {
+      font-size: 0.85rem;
+    }
+
+    .score-item input {
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .grid-4, .grid-5 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .user-area {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .nav-tabs {
+        flex-direction: column;
+      }
+      .nav-tabs .nav-btn {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .app-shell {
+        padding: 15px;
+      }
+      .card {
+        padding: 20px;
+      }
+      .toolbar {
+        flex-direction: column;
+      }
+      .toolbar .btn {
+        width: 100%;
+      }
+    }
+
+    /* Print Styles */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: white;
+      }
+      .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top-color: var(--secondary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+
+    .empty-state p {
+      font-size: 1rem;
+    }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div>
+          <h1>Grade Management System</h1>
+          <p>Teacher & Admin Dashboard Portal</p>
+        </div>
+      </div>
+      <div class="user-area">
+        <div id="userBadge" class="user-badge" style="display: none;">
+          <div class="name">Welcome, <span id="userName"></span></div>
+          <div class="role" id="userRole"></div>
+        </div>
+        <button id="logoutButton" class="btn btn-outline no-print" style="display: none;" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="section active">
+      <div class="login-container">
+        <div class="card login-card">
+          <div class="logo"><i class="fas fa-user-circle"></i></div>
+          <h2><i class="fas fa-lock"></i> Sign In</h2>
+          
+          <form onsubmit="event.preventDefault(); login();">
+            <div class="grid grid-2" style="margin-bottom: 20px;">
+              <div class="field">
+                <label><i class="fas fa-user-tag"></i> Login Type</label>
+                <select id="loginRole">
+                  <option value="student">Student</option>
+                  <option value="teacher">Teacher</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <div class="field">
+                <label><i class="fas fa-id-badge"></i> User ID</label>
+                <input type="text" id="loginId" placeholder="Enter your ID">
+              </div>
+            </div>
+            
+            <div class="field" style="margin-bottom: 20px;">
+              <label><i class="fas fa-key"></i> Password</label>
+              <div class="password-wrapper">
+                <input type="password" id="loginPassword" placeholder="Enter your password">
+                <button type="button" class="password-toggle" onclick="togglePassword()">
+                  <i class="fas fa-eye" id="passwordIcon"></i>
+                </button>
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">
+              <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+          </form>
+          
+          <div class="alert alert-info" style="margin-top: 25px;">
+            <i class="fas fa-info-circle"></i>
+            <div>
+              <strong>Login Information</strong><br>
+              Teacher access is controlled by <strong>tblTeacher</strong>. Admin access is controlled by <strong>tblAdmin</strong>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main App Content -->
+    <div id="appContent" style="display: none;">
+      <!-- Navigation -->
+      <div class="card no-print">
+        <div class="nav-tabs" id="mainNav"></div>
+      </div>
+
+      <!-- Access Banner -->
+      <div id="accessBanner" class="access-banner no-print" style="display: none;"></div>
+
+      <!-- MENU 1: Dashboard / Database -->
+      <div id="dashboardSection" class="section active">
+        <div class="card">
+          <h2><i class="fas fa-database"></i> Database Management</h2>
+          
+          <div class="grid grid-2">
+            <div class="field">
+              <label><i class="fas fa-folder-open"></i> Saved Databases (Max 5)</label>
+              <div id="databaseList" class="db-list"></div>
+            </div>
+            <div class="field">
+              <label><i class="fas fa-plus-circle"></i> Add / Edit Database</label>
+              <input type="text" id="dbName" placeholder="Database Name (e.g., Semester 1 2024)">
+              <input type="text" id="dbLink" placeholder="Google Spreadsheet Link" style="margin-top: 10px;">
+              <div class="toolbar">
+                <button class="btn btn-secondary" onclick="saveDatabaseConfig()">
+                  <i class="fas fa-save"></i> Save Database
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="databasePreview"></div>
+        </div>
+      </div>
+
+      <!-- MENU 2: Students -->
+      <div id="studentSection" class="section">
+        <div class="card">
+          <h2><i class="fas fa-user-graduate"></i> Student Score Management</h2>
+          
+          <div class="grid grid-2">
+            <div class="field">
+              <label><i class="fas fa-database"></i> Database</label>
+              <select id="studentDatabase" onchange="selectStudentDatabase()">
+                <option value="">-- Choose Database --</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><i class="fas fa-search"></i> Student ID</label>
+              <input type="text" id="studentSearchId" placeholder="Enter student ID">
+            </div>
+          </div>
+          
+          <div class="toolbar">
+            <button class="btn btn-primary" onclick="searchStudent()">
+              <i class="fas fa-search"></i> Search Student
+            </button>
+          </div>
+
+          <div id="studentSearchResult"></div>
+        </div>
+
+        <!-- Score Editor -->
+        <div id="scoreEditorSection" class="card" style="display: none;">
+          <h2><i class="fas fa-edit"></i> Score Editor</h2>
+          <div id="scoreEditorContent"></div>
+        </div>
+      </div>
+
+      <!-- MENU 3: Groups -->
+      <div id="groupsSection" class="section">
+        <div class="card">
+          <h2><i class="fas fa-users"></i> Group Management</h2>
+          
+          <div class="grid grid-2">
+            <div class="field">
+              <label><i class="fas fa-database"></i> Database</label>
+              <select id="groupDatabase" onchange="loadGroupDatabase()">
+                <option value="">-- Choose Database --</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><i class="fas fa-hashtag"></i> Section Number</label>
+              <input type="text" id="groupSection" placeholder="Enter section number">
+            </div>
+          </div>
+
+          <div class="grid grid-3" style="margin-top: 15px;">
+            <div class="field">
+              <label><i class="fas fa-calendar"></i> Period</label>
+              <select id="groupPeriod">
+                <option value="midterm">Midterm</option>
+                <option value="final_initial">Final Initial</option>
+                <option value="final_final">Final Final</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><i class="fas fa-hashtag"></i> Activity Number</label>
+              <select id="groupActivityNumber">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><i class="fas fa-users"></i> Number of Groups</label>
+              <select id="groupCount">
+                <option value="2">2 Groups</option>
+                <option value="3">3 Groups</option>
+                <option value="4">4 Groups</option>
+                <option value="5">5 Groups</option>
+                <option value="6">6 Groups</option>
+                <option value="7">7 Groups</option>
+                <option value="8">8 Groups</option>
+                <option value="9">9 Groups</option>
+                <option value="10">10 Groups</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-2" style="margin-top: 15px;">
+            <div class="field">
+              <label><i class="fas fa-tag"></i> Activity Name</label>
+              <input type="text" id="groupActivityName" placeholder="Activity name">
+            </div>
+            <div class="field">
+              <label><i class="fas fa-star"></i> Max Score</label>
+              <input type="text" id="groupActivityScore" placeholder="Max score">
+            </div>
+          </div>
+
+          <div class="field" style="margin-top: 15px;">
+            <label><i class="fas fa-history"></i> Or Select Saved Activity</label>
+            <select id="groupActivitySelect" onchange="fillGroupActivityFromSelect()">
+              <option value="">-- Select Saved Activity --</option>
+            </select>
+          </div>
+
+          <div class="toolbar">
+            <button class="btn btn-secondary" onclick="saveGroupActivityConfig()">
+              <i class="fas fa-save"></i> Save Activity
+            </button>
+            <button class="btn btn-primary" onclick="loadSectionStudentsForGroup()">
+              <i class="fas fa-users"></i> Load Section Students
+            </button>
+            <button class="btn btn-accent" onclick="autoGroupSection()">
+              <i class="fas fa-magic"></i> Auto Group
+            </button>
+            <button class="btn btn-success" onclick="saveAutoGroups()">
+              <i class="fas fa-check"></i> Save Groups
+            </button>
+          </div>
+
+          <div id="groupStudentList"></div>
+        </div>
+
+        <!-- Winner Proclamation -->
+        <div class="card">
+          <h2><i class="fas fa-trophy"></i> Winner Proclamation</h2>
+          
+          <div class="grid grid-2">
+            <div class="field">
+              <label><i class="fas fa-filter"></i> Filter by Section</label>
+              <input type="text" id="groupSectionSearch" placeholder="Section number">
+            </div>
+            <div class="field">
+              <label><i class="fas fa-hashtag"></i> Filter by Group Number</label>
+              <input type="text" id="groupNumberSearch" placeholder="Optional">
+            </div>
+          </div>
+          
+          <div class="toolbar">
+            <button class="btn btn-secondary" onclick="loadGroupNotifications()">
+              <i class="fas fa-sync-alt"></i> Load Open Groups
+            </button>
+          </div>
+
+          <h3><i class="fas fa-bell"></i> Open Group Notifications</h3>
+          <div id="groupNotifications" class="notification-grid"></div>
+          <div id="groupDetail"></div>
+        </div>
+      </div>
+
+      <!-- MENU 4: Subjects -->
+      <div id="subjectsSection" class="section">
+
+        <!-- *** ADDED: Database selector for Subjects tab *** -->
+        <div class="card">
+          <h2><i class="fas fa-database"></i> Select Database</h2>
+          <div class="grid grid-2">
+            <div class="field">
+              <label><i class="fas fa-folder-open"></i> Database</label>
+              <select id="subjectDatabase" onchange="selectSubjectDatabase()">
+                <option value="">-- Choose Database --</option>
+              </select>
+            </div>
+            <div class="field" style="justify-content: flex-end;">
+              <label>&nbsp;</label>
+              <button class="btn btn-outline" onclick="loadSubjectConfig()">
+                <i class="fas fa-sync-alt"></i> Load Current Settings
+              </button>
+            </div>
+          </div>
+          <div id="subjectConfigStatus"></div>
+        </div>
+
+        <!-- Grading Weights -->
+        <div class="card">
+          <h2><i class="fas fa-balance-scale"></i> Grading Weights</h2>
+          
+          <div class="grid grid-3">
+            <div class="field">
+              <label><i class="fas fa-percentage"></i> Midterm Collective (%)</label>
+              <input type="text" id="weightMidtermCollective" placeholder="e.g., 30">
+            </div>
+            <div class="field">
+              <label><i class="fas fa-percentage"></i> Final Initial (%)</label>
+              <input type="text" id="weightFinalInitial" placeholder="e.g., 20">
+            </div>
+            <div class="field">
+              <label><i class="fas fa-percentage"></i> Final Final (%)</label>
+              <input type="text" id="weightFinalFinal" placeholder="e.g., 20">
+            </div>
+          </div>
+          
+          <div class="grid grid-2" style="margin-top: 15px;">
+            <div class="field">
+              <label><i class="fas fa-percentage"></i> Midterm Exam (%)</label>
+              <input type="text" id="weightMidtermExam" placeholder="e.g., 15">
+            </div>
+            <div class="field">
+              <label><i class="fas fa-percentage"></i> Final Exam (%)</label>
+              <input type="text" id="weightFinalExam" placeholder="e.g., 15">
+            </div>
+          </div>
+
+          <h3><i class="fas fa-clipboard-check"></i> Passing Scores</h3>
+          <div class="grid grid-2">
+            <div class="field">
+              <label>Midterm Selected</label>
+              <input type="text" id="passMidterm" placeholder="Passing score">
+            </div>
+            <div class="field">
+              <label>Initial + Exams</label>
+              <input type="text" id="passInitial" placeholder="Passing score">
+            </div>
+            <div class="field">
+              <label>Final + Exams</label>
+              <input type="text" id="passFinal" placeholder="Passing score">
+            </div>
+            <div class="field">
+              <label>Overall Passing Score</label>
+              <input type="text" id="passOverall" placeholder="Passing score">
+            </div>
+          </div>
+
+          <div class="field" style="margin-top: 15px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" id="freezeFinalCollective" style="width: 20px; height: 20px;">
+              <i class="fas fa-snowflake"></i> Freeze Final Collective Score (Final) - Skip this period
+            </label>
+          </div>
+          
+          <div class="toolbar toolbar-right">
+            <button class="btn btn-secondary" onclick="saveSubjectWeights()">
+              <i class="fas fa-save"></i> Save Weights
+            </button>
+          </div>
+        </div>
+
+        <!-- Examination Types -->
+        <div class="card">
+          <h2><i class="fas fa-file-alt"></i> Examination Types</h2>
+          
+          <h3><i class="fas fa-calendar-check"></i> Midterm Examination</h3>
+          <div class="score-grid">
+            <div class="score-item">
+              <label>Slot 1</label>
+              <input type="text" id="midtermType1" placeholder="Type">
+              <input type="text" id="midtermScore1" placeholder="Points">
+            </div>
+            <div class="score-item">
+              <label>Slot 2</label>
+              <input type="text" id="midtermType2" placeholder="Type">
+              <input type="text" id="midtermScore2" placeholder="Points">
+            </div>
+            <div class="score-item">
+              <label>Slot 3</label>
+              <input type="text" id="midtermType3" placeholder="Type">
+              <input type="text" id="midtermScore3" placeholder="Points">
+            </div>
+            <div class="score-item">
+              <label>Slot 4</label>
+              <input type="text" id="midtermType4" placeholder="Type">
+              <input type="text" id="midtermScore4" placeholder="Points">
+            </div>
+            <div class="score-item">
+              <label>Slot 5</label>
+              <input type="text" id="midtermType5" placeholder="Type">
+              <input type="text" id="midtermScore5" placeholder="Points">
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="btn btn-secondary" onclick="saveExamTypes('midterm')">
+              <i class="fas fa-save"></i> Save Midterm Exam Types
+            </button>
+          </div>
+
+          <h3><i class="fas fa-calendar-alt"></i> Final Examination</h3>
+          <div class="score-grid">
+            <div class="score-item">
+              <label>Slot 1</label>
+              <input type="text" id="finalType1" placeholder="Type">
+              <input type="text" id="finalScore1" placeholder="Points">
+            </div>
+            <div class="score-item">
+              <label>Slot 2</label>
+              <input type="text" id="finalType2" placeholder="Type">
+              <input type="text" id="finalScore2" placeholder="Points">
+            </div>
+            <div class="score-item">
+              <label>Slot 3</label>
+              <input type="text" id="finalType3" placeholder="Type">
+              <input type="text" id="finalScore3" placeholder="Points">
+            </div>
+            <div class="score-item">
+              <label>Slot 4</label>
+              <input type="text" id="finalType4" placeholder="Type">
+              <input type="text" id="finalScore4" placeholder="Points">
+            </div>
+            <div class="score-item">
+              <label>Slot 5</label>
+              <input type="text" id="finalType5" placeholder="Type">
+              <input type="text" id="finalScore5" placeholder="Points">
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="btn btn-secondary" onclick="saveExamTypes('final')">
+              <i class="fas fa-save"></i> Save Final Exam Types
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MENU 5: Sections Grading Sheet -->
+      <div id="sectionsSection" class="section">
+        <div class="card">
+          <h2><i class="fas fa-clipboard-list"></i> Grading Sheet Preview</h2>
+          
+          <div class="grid grid-2">
+            <div class="field">
+              <label><i class="fas fa-database"></i> Database</label>
+              <select id="sectionDatabase" onchange="selectSectionDatabase()">
+                <option value="">-- Choose Database --</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><i class="fas fa-hashtag"></i> Section Number (Leave empty for all)</label>
+              <input type="text" id="sectionFilter" placeholder="Enter section or leave blank">
+            </div>
+          </div>
+          
+          <div class="toolbar">
+            <button class="btn btn-primary" onclick="renderSectionPreview()">
+              <i class="fas fa-eye"></i> View Grading Sheet
+            </button>
+          </div>
+          
+          <div id="sectionPreview"></div>
+        </div>
+
+        <!-- Downloads -->
+        <div class="card">
+          <h2><i class="fas fa-download"></i> Download Reports</h2>
+          
+          <div class="grid grid-2" style="margin-bottom: 20px;">
+            <div class="field">
+              <label><i class="fas fa-user"></i> Specific Student ID (Optional)</label>
+              <input type="text" id="exportStudentId" placeholder="Leave empty for all">
+            </div>
+            <div class="field">
+              <label><i class="fas fa-hashtag"></i> Section for Download</label>
+              <input type="text" id="exportSection" placeholder="Section number">
+            </div>
+          </div>
+
+          <h3><i class="fas fa-file-excel"></i> Excel Downloads (CSV Format)</h3>
+          <div class="download-grid">
+            <div class="download-btn" onclick="downloadAllGradesExcel()">
+              <i class="fas fa-file-excel"></i>
+              <span>Entire Grade</span>
+              <small>All students in CSV</small>
+            </div>
+            <div class="download-btn" onclick="downloadSectionExcel()">
+              <i class="fas fa-file-excel"></i>
+              <span>Section Grade</span>
+              <small>Selected section CSV</small>
+            </div>
+            <div class="download-btn" onclick="downloadStudentExcel()">
+              <i class="fas fa-file-excel"></i>
+              <span>Student Report</span>
+              <small>Individual student CSV</small>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 25px;"><i class="fas fa-file-pdf"></i> PDF Downloads (Printable)</h3>
+          <div class="download-grid">
+            <div class="download-btn" onclick="downloadAllGradesPDF()">
+              <i class="fas fa-file-pdf"></i>
+              <span>Entire Grade PDF</span>
+              <small>All students printable</small>
+            </div>
+            <div class="download-btn" onclick="downloadSectionPDF()">
+              <i class="fas fa-file-pdf"></i>
+              <span>Section PDF</span>
+              <small>Selected section</small>
+            </div>
+            <div class="download-btn" onclick="downloadStudentPDF()">
+              <i class="fas fa-file-pdf"></i>
+              <span>Student Report PDF</span>
+              <small>Individual student</small>
+            </div>
+          </div>
+
+          <div class="alert alert-info" style="margin-top: 20px;">
+            <i class="fas fa-info-circle"></i>
+            <div>
+              <strong>Download Tips</strong><br>
+              CSV files open in Excel. PDF files are formatted for A4 paper and ready to print. Student reports include signature lines.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MENU 6: Pass/Fail List -->
+      <div id="passfailSection" class="section">
+        <div class="card">
+          <h2><i class="fas fa-user-check"></i> List of Students Who Passed or Failed</h2>
+          
+          <div class="grid grid-2">
+            <div class="field">
+              <label><i class="fas fa-database"></i> Database</label>
+              <select id="passDatabase" onchange="selectPassDatabase()">
+                <option value="">-- Choose Database --</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><i class="fas fa-search"></i> Search Student (Optional)</label>
+              <input type="text" id="passSearchId" placeholder="Leave empty for all">
+            </div>
+          </div>
+          
+          <div class="toolbar">
+            <button class="btn btn-primary" onclick="renderPassFailList()">
+              <i class="fas fa-list"></i> Show Pass/Fail List
+            </button>
+            <button class="btn btn-secondary" onclick="downloadPassFailPDF()">
+              <i class="fas fa-file-pdf"></i> Download PDF
+            </button>
+          </div>
+          
+          <div id="passFailList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flash Message -->
+  <div id="flashMessage" class="flash" style="display: none;"></div>
+
+  <script>
+    // ==================== GLOBAL STATE ====================
+    var state = {
+      user: null,
+      databases: [],
+      currentDb: null,
+      currentDbData: null,
+      currentStudent: null,
+      autoGroups: null,
+      groupSectionStudents: null,
+      activeGroupRows: null
+    };
+
+    // ==================== INITIALIZATION ====================
+    window.onload = function() {
+      showFlash('Initializing system...', false);
+      setTimeout(function() {
+        loadDatabaseConfig();
+        renderNav();
+        restoreDrafts();
+        bindDraftFields();
+        showFlash('System ready', false);
+      }, 500);
+    };
+
+    // ==================== UTILITY FUNCTIONS ====================
+    function showFlash(message, isError) {
+      var flash = document.getElementById('flashMessage');
+      if (!flash) return;
+      flash.innerHTML = '<i class="fas fa-' + (isError ? 'exclamation-circle' : 'check-circle') + '"></i> ' + message;
+      flash.className = 'flash' + (isError ? ' error' : '');
+      flash.style.display = 'flex';
+      clearTimeout(window.flashTimer);
+      window.flashTimer = setTimeout(function() {
+        flash.style.display = 'none';
+      }, 4000);
+    }
+
+    function showError(message) {
+      showFlash(message, true);
+      console.error(message);
+    }
+
+    function canEdit() {
+      return !!(
+        state.user &&
+        (
+          state.user.role === 'admin' ||
+          (state.user.role === 'teacher' && state.user.access === 'edit')
+        )
+      );
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function restoreDrafts() {
+      var fields = ['dbName', 'dbLink', 'studentSearchId', 'sectionFilter', 'exportStudentId', 'exportSection', 'passSearchId'];
+      fields.forEach(function(id) {
+        var stored = localStorage.getItem(id);
+        var el = document.getElementById(id);
+        if (stored !== null && el) el.value = stored;
+      });
+    }
+
+    function bindDraftFields() {
+      var fields = ['dbName', 'dbLink', 'studentSearchId', 'sectionFilter', 'exportStudentId', 'exportSection', 'passSearchId'];
+      fields.forEach(function(id) {
+        var input = document.getElementById(id);
+        if (!input) return;
+        input.addEventListener('input', function() {
+          localStorage.setItem(id, this.value);
+        });
+      });
+    }
+
+    function clearDraft(id) {
+      localStorage.removeItem(id);
+    }
+
+    // ==================== PASSWORD TOGGLE ====================
+    function togglePassword() {
+      var pass = document.getElementById('loginPassword');
+      var icon = document.getElementById('passwordIcon');
+      if (pass.type === 'password') {
+        pass.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+      } else {
+        pass.type = 'password';
+        icon.className = 'fas fa-eye';
+      }
+    }
+
+    // ==================== NAVIGATION ====================
+    function renderNav() {
+      var nav = document.getElementById('mainNav');
+      if (!nav) return;
+      nav.innerHTML = '';
+      
+      var tabs = [
+        { id: 'dashboardSection', icon: 'database', label: 'Dashboard' },
+        { id: 'studentSection', icon: 'user-graduate', label: 'Students' },
+        { id: 'groupsSection', icon: 'users', label: 'Groups' },
+        { id: 'subjectsSection', icon: 'book', label: 'Subjects' },
+        { id: 'sectionsSection', icon: 'clipboard-list', label: 'Sections' },
+        { id: 'passfailSection', icon: 'user-check', label: 'Pass/Fail' }
+      ];
+      if (state.user && state.user.role === 'student') {
+        tabs = [
+          { id: 'studentSection', icon: 'user-graduate', label: 'My Grades' }
+        ];
+      }
+      
+      tabs.forEach(function(tab, index) {
+        var btn = document.createElement('button');
+        btn.className = 'nav-btn' + (index === 0 ? ' active' : '');
+        btn.innerHTML = '<i class="fas fa-' + tab.icon + '"></i> ' + tab.label;
+        btn.onclick = function() {
+          setSection(tab.id);
+          setActiveNavBtn(btn);
+        };
+        nav.appendChild(btn);
+      });
+    }
+
+    function setActiveNavBtn(btn) {
+      var buttons = document.querySelectorAll('.nav-btn');
+      buttons.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+
+    function setSection(sectionId) {
+      var sections = ['loginSection', 'dashboardSection', 'studentSection', 'groupsSection', 'subjectsSection', 'sectionsSection', 'passfailSection'];
+      
+      sections.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('active');
+        el.style.display = 'none';
+      });
+      
+      var target = document.getElementById(sectionId);
+      if (target) {
+        target.classList.add('active');
+        target.style.display = 'block';
+      }
+
+      var appContent = document.getElementById('appContent');
+      var loginSection = document.getElementById('loginSection');
+      
+      if (appContent) {
+        appContent.style.display = sectionId !== 'loginSection' ? 'block' : 'none';
+      }
+      if (loginSection) {
+        loginSection.style.display = sectionId === 'loginSection' ? 'block' : 'none';
+      }
+
+      if (sectionId === 'dashboardSection') {
+        loadDatabaseConfig();
+      }
+    }
+
+    // ==================== LOGIN/LOGOUT ====================
+    function login() {
+      var role = document.getElementById('loginRole').value;
+      var id = document.getElementById('loginId').value;
+      var password = document.getElementById('loginPassword').value;
+      
+      if (!id || !password) {
+        showError('Please enter both ID and password.');
+        return;
+      }
+
+      showFlash('Authenticating...', false);
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (!result || !result.success) {
+            showError(result ? result.message : 'Login failed');
+            return;
+          }
+
+          state.user = result;
+          
+          document.getElementById('userName').textContent = result.name || 'User';
+          document.getElementById('userRole').textContent = result.role === 'admin'
+            ? 'Administrator'
+            : (result.role === 'student'
+              ? 'Student • ' + (result.dbName || '')
+              : 'Teacher • ' + (result.accessText || 'Unknown'));
+          document.getElementById('userBadge').style.display = 'block';
+          document.getElementById('logoutButton').style.display = 'inline-flex';
+          renderNav();
+
+          // Show access banner
+          var banner = document.getElementById('accessBanner');
+          if (banner) {
+            if (result.role === 'student') {
+              banner.className = 'access-banner view-only';
+              banner.innerHTML = '<i class="fas fa-eye"></i> Student Mode: You can view only your own grades.';
+              banner.style.display = 'flex';
+            } else if (result.role === 'teacher' && result.access === 'unauthorized') {
+              banner.className = 'access-banner unauthorized';
+              banner.innerHTML = '<i class="fas fa-ban"></i> You are unauthorized to access this panel. Please contact the administrator to request authorization.';
+              banner.style.display = 'flex';
+            } else if (result.role === 'teacher' && result.access === 'view') {
+              banner.className = 'access-banner view-only';
+              banner.innerHTML = '<i class="fas fa-eye"></i> View-Only Mode: You are authorized to view but cannot edit records.';
+              banner.style.display = 'flex';
+            } else {
+              banner.className = 'access-banner edit';
+              banner.innerHTML = '<i class="fas fa-edit"></i> Full Access: You can view and edit records.';
+              banner.style.display = 'flex';
+            }
+          }
+
+          setSection(result.role === 'student' ? 'studentSection' : 'dashboardSection');
+          showFlash('Welcome, ' + result.name + '!', false);
+          
+          if (result.role === 'teacher' && result.access === 'unauthorized') {
+            document.getElementById('dashboardSection').innerHTML = 
+              '<div class="card">' +
+              '<h2><i class="fas fa-lock"></i> Access Denied</h2>' +
+              '<div class="alert alert-danger">' +
+              '<i class="fas fa-exclamation-triangle"></i>' +
+              '<div><strong>You are unauthorized to access this panel.</strong><br>' +
+              'Please contact the administrator to request authorization for access.</div>' +
+              '</div></div>';
+          }
+          
+          loadDatabaseConfig();
+          if (result.role === 'student') {
+            setTimeout(loadStudentSelfView, 350);
+          }
+        })
+        .withFailureHandler(function(error) {
+          showError('Login failed: ' + (error.message || 'Unknown error'));
+        })
+        .validateLogin(role, id, password);
+    }
+
+    function logout() {
+      state.user = null;
+      state.currentDb = null;
+      state.currentDbData = null;
+      state.currentStudent = null;
+      
+      document.getElementById('userBadge').style.display = 'none';
+      document.getElementById('logoutButton').style.display = 'none';
+      document.getElementById('accessBanner').style.display = 'none';
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginId').value = '';
+      var studentDb = document.getElementById('studentDatabase');
+      var studentIdInput = document.getElementById('studentSearchId');
+      if (studentDb) studentDb.disabled = false;
+      if (studentIdInput) studentIdInput.readOnly = false;
+      renderNav();
+      
+      setSection('loginSection');
+      showFlash('Logged out successfully', false);
+    }
+
+    // ==================== DATABASE MANAGEMENT ====================
+    function loadDatabaseConfig() {
+      google.script.run
+        .withSuccessHandler(function(config) {
+          state.databases = config || [];
+          renderDatabaseCards();
+          bindDbSelectors();
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to load databases: ' + (err.message || err));
+        })
+        .getDatabaseConfig();
+    }
+
+    function renderDatabaseCards() {
+      var container = document.getElementById('databaseList');
+      if (!container) return;
+      
+      if (!state.databases.length) {
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i><p>No saved databases yet.</p></div>';
+        return;
+      }
+
+      var html = '';
+      state.databases.forEach(function(db) {
+        html += '<div class="db-card" onclick="loadDatabase(\'' + escapeHtml(db.link) + '\')">' +
+          '<i class="fas fa-database"></i>' +
+          '<div class="db-card-content">' +
+          '<strong>' + escapeHtml(db.name) + '</strong>' +
+          '<small>' + escapeHtml(db.link.substring(0, 50)) + '...</small>' +
+          '</div></div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function bindDbSelectors() {
+      // *** ADDED subjectDatabase to the list of selectors ***
+      var selectors = ['studentDatabase', 'sectionDatabase', 'passDatabase', 'groupDatabase', 'subjectDatabase'];
+      selectors.forEach(function(id) {
+        var select = document.getElementById(id);
+        if (!select) return;
+        select.innerHTML = '<option value="">-- Choose Database --</option>';
+        state.databases.forEach(function(db) {
+          var option = document.createElement('option');
+          option.value = db.link;
+          option.textContent = db.name;
+          select.appendChild(option);
+        });
+      });
+    }
+
+    function loadStudentSelfView() {
+      if (!state.user || state.user.role !== 'student') return;
+      var studentDb = document.getElementById('studentDatabase');
+      var studentIdInput = document.getElementById('studentSearchId');
+      if (!studentDb || !studentIdInput) return;
+
+      if (state.user.dbLink) studentDb.value = state.user.dbLink;
+      if (state.user.studentId) studentIdInput.value = state.user.studentId;
+      studentDb.disabled = true;
+      studentIdInput.readOnly = true;
+      searchStudent();
+    }
+
+    function saveDatabaseConfig() {
+      if (!canEdit()) {
+        showError('You are authorized to view only and cannot save edits.');
+        return;
+      }
+      
+      var name = document.getElementById('dbName').value;
+      var link = document.getElementById('dbLink').value;
+      
+      if (!name || !link) {
+        showError('Please provide both database name and link.');
+        return;
+      }
+
+      showFlash('Saving database...', false);
+
+      google.script.run
+        .withSuccessHandler(function() {
+          showFlash('Database saved successfully', false);
+          clearDraft('dbName');
+          clearDraft('dbLink');
+          document.getElementById('dbName').value = '';
+          document.getElementById('dbLink').value = '';
+          loadDatabaseConfig();
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to save: ' + (err.message || err));
+        })
+        .saveDatabaseConfig(name, link);
+    }
+
+    function loadDatabase(link) {
+      if (!link) return;
+      
+      showFlash('Loading database...', false);
+      state.currentDb = { link: link };
+
+      google.script.run
+        .withSuccessHandler(function(data) {
+          state.currentDbData = data.sheets;
+          renderLoadedDatabase(data);
+          showFlash('Database loaded successfully', false);
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to load database: ' + (err.message || err));
+        })
+        .loadDatabase(link);
+    }
+
+    function renderLoadedDatabase(data) {
+      var preview = document.getElementById('databasePreview');
+      if (!preview) return;
+
+      var db = data.sheets.tblDatabase || [];
+      var count = db.length > 3 ? db.length - 3 : 0;
+
+      var html = '<div class="alert alert-success">' +
+        '<i class="fas fa-check-circle"></i>' +
+        '<div><strong>Database Loaded Successfully</strong><br>' +
+        count + ' student(s) found.</div></div>';
+
+      html += '<div class="grid grid-4" style="margin: 20px 0;">' +
+        '<div class="tag tag-primary"><i class="fas fa-users"></i> Students: ' + count + '</div>' +
+        '<div class="tag tag-info"><i class="fas fa-tasks"></i> Activities: Configured</div>' +
+        '<div class="tag tag-info"><i class="fas fa-file-alt"></i> Exams: Configured</div>' +
+        '<div class="tag tag-success"><i class="fas fa-check"></i> Ready</div>' +
+        '</div>';
+
+      if (db.length > 3) {
+        html += '<div class="table-container"><table>' +
+          '<thead><tr>' +
+          '<th>Student ID</th><th>Thai Name</th><th>English Name</th><th>Section</th><th>Class</th>' +
+          '</tr></thead><tbody>';
+        
+        var displayCount = Math.min(10, db.length - 3);
+        for (var i = 3; i < 3 + displayCount; i++) {
+          var row = db[i] || [];
+          html += '<tr>' +
+            '<td>' + escapeHtml(row[0]) + '</td>' +
+            '<td>' + escapeHtml(row[1]) + '</td>' +
+            '<td>' + escapeHtml(row[2]) + '</td>' +
+            '<td>' + escapeHtml(row[3]) + '</td>' +
+            '<td>' + escapeHtml(row[4]) + '</td></tr>';
+        }
+        
+        html += '</tbody></table></div>';
+        
+        if (db.length - 3 > 10) {
+          html += '<p style="color: var(--muted); text-align: center; margin-top: 10px;">' +
+            'Showing 10 of ' + count + ' students. Use Students tab to search specific records.</p>';
+        }
+      }
+
+      preview.innerHTML = html;
+    }
+
+    // ==================== STUDENT SEARCH ====================
+    function selectStudentDatabase() {
+      var link = document.getElementById('studentDatabase').value;
+      state.currentDb = state.databases.find(function(db) { return db.link === link; });
+    }
+
+    function searchStudent() {
+      var link = document.getElementById('studentDatabase').value;
+      var studentId = document.getElementById('studentSearchId').value;
+      if (state.user && state.user.role === 'student') {
+        link = state.user.dbLink || link;
+        studentId = state.user.studentId || studentId;
+      }
+      
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+      if (!studentId) {
+        showError('Please enter a Student ID to search.');
+        return;
+      }
+
+      showFlash('Searching student...', false);
+
+      google.script.run
+        .withSuccessHandler(renderStudentResult)
+        .withFailureHandler(function(err) {
+          showError('Search failed: ' + (err.message || err));
+        })
+        .searchStudentRecords(link, studentId);
+    }
+
+    function renderStudentResult(data) {
+      var container = document.getElementById('studentSearchResult');
+      if (!container) return;
+
+      if (!data || !data.studentRow) {
+        container.innerHTML = '<div class="alert alert-danger">' +
+          '<i class="fas fa-user-times"></i>' +
+          '<div><strong>Student Not Found</strong><br>' +
+          'No student found with that ID in the database.</div></div>';
+        return;
+      }
+
+      var values = data.studentRow.values || [];
+      state.currentStudent = data;
+
+      var html = '<div class="alert alert-success">' +
+        '<i class="fas fa-user-check"></i>' +
+        '<div><strong>Student Found</strong><br>' +
+        escapeHtml(values[2] || '') + ' (' + escapeHtml(values[0] || '') + ')</div></div>';
+
+      html += '<div class="grid grid-3" style="margin: 15px 0;">' +
+        '<div class="tag tag-warning"><i class="fas fa-layer-group"></i> Grade Level/DB: ' + escapeHtml((state.user && state.user.dbName) || '-') + '</div>' +
+        '<div class="tag tag-primary"><i class="fas fa-hashtag"></i> Section: ' + escapeHtml(values[3] || '-') + '</div>' +
+        '<div class="tag tag-info"><i class="fas fa-id-card"></i> Class: ' + escapeHtml(values[4] || '-') + '</div>' +
+        '<div class="tag tag-success"><i class="fas fa-user"></i> ' + escapeHtml(values[1] || '-') + '</div>' +
+        '</div>';
+
+      // Score edit buttons
+      if (canEdit()) {
+        html += '<h3><i class="fas fa-edit"></i> Edit Scores</h3>';
+        html += '<div class="toolbar">';
+        html += '<button class="btn btn-secondary" onclick="editScoreBlock(\'midtermCollective\')"><i class="fas fa-calendar-alt"></i> Midterm Collective</button>';
+        html += '<button class="btn btn-secondary" onclick="editScoreBlock(\'finalCollective1\')"><i class="fas fa-calendar-check"></i> Final Initial</button>';
+        html += '<button class="btn btn-secondary" onclick="editScoreBlock(\'finalCollective2\')"><i class="fas fa-calendar"></i> Final Final</button>';
+        html += '<button class="btn btn-accent" onclick="editScoreBlock(\'midtermExam\')"><i class="fas fa-file-alt"></i> Midterm Exam</button>';
+        html += '<button class="btn btn-accent" onclick="editScoreBlock(\'finalExam\')"><i class="fas fa-file"></i> Final Exam</button>';
+        html += '</div>';
+      }
+
+      // Quick summary
+      html += '<h3><i class="fas fa-chart-bar"></i> Score Summary</h3>';
+      html += '<div class="grid grid-2">';
+      html += '<div class="tag tag-primary"><i class="fas fa-star"></i> Midterm Total: ' + (values[21] || '-') + '</div>';
+      html += '<div class="tag tag-info"><i class="fas fa-star"></i> Final Initial: ' + (values[47] || '-') + '</div>';
+      html += '<div class="tag tag-info"><i class="fas fa-star"></i> Final Final: ' + (values[60] || '-') + '</div>';
+      html += '<div class="tag tag-' + ((values[74] || '').toLowerCase().indexOf('pass') >= 0 ? 'success' : 'danger') + '"><i class="fas fa-award"></i> Result: ' + (values[74] || '-') + '</div>';
+      html += '</div>';
+
+      container.innerHTML = html;
+    }
+
+    function editScoreBlock(blockType) {
+      if (!state.currentStudent) {
+        showError('No student loaded.');
+        return;
+      }
+
+      var section = document.getElementById('scoreEditorSection');
+      var content = document.getElementById('scoreEditorContent');
+      
+      if (!section || !content) return;
+
+      var record = state.currentStudent[blockType];
+      var values = record ? record.values : [];
+      var labels = state.currentStudent.activityNameHeader || [];
+
+      var sheetMap = {
+        midtermCollective: { sheet: 'tblMidtermCollectiveIndividual', cols: 10, start: 2 },
+        finalCollective1: { sheet: 'tblFinalCollectiveIndividual_1', cols: 10, start: 2 },
+        finalCollective2: { sheet: 'tblFinalCollectiveIndividual_2', cols: 5, start: 2 },
+        midtermExam: { sheet: 'tblMidtermExam', cols: 5, start: 2 },
+        finalExam: { sheet: 'tblFinalExam', cols: 5, start: 2 }
+      };
+
+      var map = sheetMap[blockType];
+      if (!map) {
+        showError('Invalid block type: ' + blockType);
+        return;
+      }
+
+      var title = blockType.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); });
+
+      var html = '<h3><i class="fas fa-edit"></i> ' + title + '</h3>';
+      html += '<div class="score-grid">';
+      
+      for (var i = 0; i < map.cols; i++) {
+        var label = labels[i + 1] || 'Activity ' + (i + 1);
+        var value = values[i + 1] || '';
+        html += '<div class="score-item">' +
+          '<label>' + escapeHtml(label) + '</label>' +
+          '<input type="text" id="score_' + blockType + '_' + i + '" value="' + escapeHtml(value) + '">' +
+          '</div>';
+      }
+      
+      html += '</div>';
+      html += '<div class="toolbar toolbar-right">' +
+        '<button class="btn btn-success" onclick="saveScoreBlock(\'' + blockType + '\')">' +
+        '<i class="fas fa-save"></i> Save Scores</button></div>';
+
+      content.innerHTML = html;
+      section.style.display = 'block';
+    }
+
+    function saveScoreBlock(blockType) {
+      if (!canEdit()) {
+        showError('You are authorized to view only and cannot save edits.');
+        return;
+      }
+
+      if (!state.currentStudent || !state.currentStudent.studentRow) {
+        showError('No student record loaded.');
+        return;
+      }
+
+      var sheetMap = {
+        midtermCollective: { sheet: 'tblMidtermCollectiveIndividual', cols: 10, start: 2 },
+        finalCollective1: { sheet: 'tblFinalCollectiveIndividual_1', cols: 10, start: 2 },
+        finalCollective2: { sheet: 'tblFinalCollectiveIndividual_2', cols: 5, start: 2 },
+        midtermExam: { sheet: 'tblMidtermExam', cols: 5, start: 2 },
+        finalExam: { sheet: 'tblFinalExam', cols: 5, start: 2 }
+      };
+
+      var map = sheetMap[blockType];
+      if (!map) {
+        showError('Invalid block type.');
+        return;
+      }
+
+      var values = [];
+      for (var i = 0; i < map.cols; i++) {
+        var input = document.getElementById('score_' + blockType + '_' + i);
+        values.push(input ? input.value : '');
+      }
+
+      var link = document.getElementById('studentDatabase').value;
+      var studentId = state.currentStudent.studentRow.values[0];
+
+      showFlash('Saving scores...', false);
+
+      google.script.run
+        .withSuccessHandler(function() {
+          showFlash('Scores saved successfully!', false);
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to save: ' + (err.message || err));
+        })
+        .saveStudentScoreBlock(link, map.sheet, map.start, [{ studentId: studentId, values: values }]);
+    }
+
+    // ==================== GROUP MANAGEMENT ====================
+    function loadGroupDatabase() {
+      var link = document.getElementById('groupDatabase').value;
+      state.currentDb = state.databases.find(function(db) { return db.link === link; });
+      
+      if (link) {
+        google.script.run
+          .withSuccessHandler(function(items) {
+            var select = document.getElementById('groupActivitySelect');
+            if (!select) return;
+            select.innerHTML = '<option value="">-- Select Saved Activity --</option>';
+            (items || []).forEach(function(item) {
+              var option = document.createElement('option');
+              option.value = item.period + '||' + item.activityNumber + '||' + item.name + '||' + item.score;
+              option.textContent = item.period + ' â€¢ Activity ' + item.activityNumber + ' â€¢ ' + item.name + ' (' + item.score + ')';
+              select.appendChild(option);
+            });
+          })
+          .getSavedGroupActivities(link);
+      }
+    }
+
+    function fillGroupActivityFromSelect() {
+      var selectVal = document.getElementById('groupActivitySelect').value;
+      if (!selectVal) return;
+      var parts = selectVal.split('||');
+      if (parts.length >= 4) {
+        document.getElementById('groupPeriod').value = parts[0];
+        document.getElementById('groupActivityNumber').value = parts[1];
+        document.getElementById('groupActivityName').value = parts[2];
+        document.getElementById('groupActivityScore').value = parts[3];
+      }
+    }
+
+    function loadSectionStudentsForGroup() {
+      var link = document.getElementById('groupDatabase').value;
+      var section = document.getElementById('groupSection').value;
+      
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+      if (!section) {
+        showError('Please enter a section number.');
+        return;
+      }
+
+      showFlash('Loading section students...', false);
+
+      google.script.run
+        .withSuccessHandler(function(students) {
+          renderGroupStudentList(students);
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to load students: ' + (err.message || err));
+        })
+        .getSectionStudents(link, section);
+    }
+
+    function renderGroupStudentList(students) {
+      var container = document.getElementById('groupStudentList');
+      if (!container) return;
+
+      if (!students || !students.length) {
+        container.innerHTML = '<div class="alert alert-warning">' +
+          '<i class="fas fa-users-slash"></i>' +
+          '<div>No students found for this section.</div></div>';
+        return;
+      }
+
+      state.groupSectionStudents = students;
+
+      var html = '<h3><i class="fas fa-list"></i> Section Students (' + students.length + ')</h3>';
+      html += '<div class="table-container"><table>' +
+        '<thead><tr><th>#</th><th>Student ID</th><th>Thai Name</th><th>English Name</th><th>Class</th></tr></thead><tbody>';
+      
+      students.forEach(function(s, idx) {
+        html += '<tr>' +
+          '<td>' + (idx + 1) + '</td>' +
+          '<td>' + escapeHtml(s.studentId) + '</td>' +
+          '<td>' + escapeHtml(s.thaiName) + '</td>' +
+          '<td>' + escapeHtml(s.englishName) + '</td>' +
+          '<td>' + escapeHtml(s.classNumber) + '</td></tr>';
+      });
+      
+      html += '</tbody></table></div>';
+      container.innerHTML = html;
+    }
+
+    function autoGroupSection() {
+      var link = document.getElementById('groupDatabase').value;
+      var section = document.getElementById('groupSection').value;
+      var count = parseInt(document.getElementById('groupCount').value, 10);
+      
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+      if (!section) {
+        showError('Please enter a section number.');
+        return;
+      }
+      if (!count || count < 1 || count > 10) {
+        showError('Please select a valid number of groups (1-10).');
+        return;
+      }
+
+      showFlash('Generating auto groups...', false);
+
+      google.script.run
+        .withSuccessHandler(function(groups) {
+          renderAutoGroups(groups);
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to generate groups: ' + (err.message || err));
+        })
+        .generateAutoGroups(link, section, count);
+    }
+
+    function renderAutoGroups(groups) {
+      var container = document.getElementById('groupStudentList');
+      if (!container) return;
+
+      if (!groups || !groups.length) {
+        container.innerHTML = '<div class="alert alert-warning">' +
+          '<i class="fas fa-exclamation-triangle"></i>' +
+          '<div>Failed to generate groups. No students found.</div></div>';
+        return;
+      }
+
+      state.autoGroups = groups;
+
+      var html = '<h3><i class="fas fa-object-group"></i> Auto Groups Generated</h3>';
+      
+      groups.forEach(function(group) {
+        html += '<div class="card" style="margin-bottom: 15px;">';
+        html += '<h4><i class="fas fa-users"></i> Group ' + group.groupNumber + ' (' + group.members.length + ' members)</h4>';
+        html += '<div class="table-container"><table style="font-size: 0.85rem;">' +
+          '<thead><tr><th>#</th><th>Student ID</th><th>English Name</th><th>Thai Name</th></tr></thead><tbody>';
+        
+        group.members.forEach(function(m, idx) {
+          html += '<tr>' +
+            '<td>' + (idx + 1) + '</td>' +
+            '<td>' + escapeHtml(m.studentId) + '</td>' +
+            '<td>' + escapeHtml(m.englishName) + '</td>' +
+            '<td>' + escapeHtml(m.thaiName) + '</td></tr>';
+        });
+        
+        html += '</tbody></table></div></div>';
+      });
+
+      container.innerHTML = html;
+      showFlash('Groups generated. Click "Save Groups" to save.', false);
+    }
+
+    function saveGroupActivityConfig() {
+      if (!canEdit()) {
+        showError('You are authorized to view only and cannot save edits.');
+        return;
+      }
+
+      var link = document.getElementById('groupDatabase').value;
+      var period = document.getElementById('groupPeriod').value;
+      var activityNumber = parseInt(document.getElementById('groupActivityNumber').value, 10);
+      var name = document.getElementById('groupActivityName').value;
+      var score = document.getElementById('groupActivityScore').value;
+
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+      if (!name || !score) {
+        showError('Please enter activity name and score.');
+        return;
+      }
+
+      showFlash('Saving activity...', false);
+
+      google.script.run
+        .withSuccessHandler(function() {
+          showFlash('Group activity saved successfully!', false);
+          loadGroupDatabase();
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to save activity: ' + (err.message || err));
+        })
+        .saveGroupActivity(link, period, activityNumber, name, score);
+    }
+
+    function saveAutoGroups() {
+      if (!canEdit()) {
+        showError('You are authorized to view only and cannot save edits.');
+        return;
+      }
+
+      if (!state.autoGroups || !state.autoGroups.length) {
+        showError('No groups to save. Generate groups first.');
+        return;
+      }
+
+      var link = document.getElementById('groupDatabase').value;
+      var section = document.getElementById('groupSection').value;
+      var period = document.getElementById('groupPeriod').value;
+      var activityNumber = parseInt(document.getElementById('groupActivityNumber').value, 10);
+      var activityName = document.getElementById('groupActivityName').value;
+      var activityScore = document.getElementById('groupActivityScore').value;
+
+      var selectVal = document.getElementById('groupActivitySelect').value;
+      if (!activityName && selectVal) {
+        var parts = selectVal.split('||');
+        if (parts.length >= 4) {
+          activityName = parts[2];
+          activityScore = parts[3];
+        }
+      }
+
+      var entries = state.autoGroups.map(function(group) {
+        return {
+          groupId: section + '-' + period + '-' + activityNumber + '-g' + group.groupNumber,
+          groupNumber: group.groupNumber,
+          section: section,
+          period: period,
+          activityNumber: activityNumber,
+          activityName: activityName,
+          members: group.members.map(function(m) { return m.studentId; }).join(', '),
+          place: '',
+          scores: '',
+          isClosed: 'open',
+          demerits: ''
+        };
+      });
+
+      showFlash('Saving groups...', false);
+
+      google.script.run
+        .withSuccessHandler(function() {
+          showFlash('Groups saved successfully!', false);
+          loadGroupNotifications();
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to save groups: ' + (err.message || err));
+        })
+        .saveAutoGroups(link, entries);
+    }
+
+    function loadGroupNotifications() {
+      var link = document.getElementById('groupDatabase').value;
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+
+      var section = document.getElementById('groupSectionSearch').value;
+      var groupNumber = document.getElementById('groupNumberSearch').value;
+
+      showFlash('Loading open groups...', false);
+
+      google.script.run
+        .withSuccessHandler(function(rows) {
+          renderGroupNotifications(rows);
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to load groups: ' + (err.message || err));
+        })
+        .loadGroupDatabaseRows(link, section, groupNumber, true);
+    }
+
+    function renderGroupNotifications(rows) {
+      var container = document.getElementById('groupNotifications');
+      var detail = document.getElementById('groupDetail');
+      
+      if (!container) return;
+      if (detail) detail.innerHTML = '';
+
+      if (!rows || !rows.length) {
+        container.innerHTML = '<div class="alert alert-info">' +
+          '<i class="fas fa-inbox"></i>' +
+          '<div>No open groups found.</div></div>';
+        return;
+      }
+
+      state.activeGroupRows = rows;
+
+      var html = '';
+      rows.forEach(function(item) {
+        var values = item.values || [];
+        html += '<div class="notification-card" onclick="showGroupDetail(' + item.rowNumber + ')">' +
+          '<strong><i class="fas fa-bell"></i> ' + escapeHtml(values[3] || '') + ' â€¢ Group ' + escapeHtml(values[1] || '') + '</strong>' +
+          '<small>Section: ' + escapeHtml(values[2] || '') + ' â€¢ Activity ' + escapeHtml(values[4] || '') + ' â€¢ ' + escapeHtml(values[5] || '') + '</small>' +
+          '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    function showGroupDetail(rowNumber) {
+      var item = (state.activeGroupRows || []).find(function(r) { return r.rowNumber === rowNumber; });
+      if (!item) {
+        showError('Group not found.');
+        return;
+      }
+
+      var values = item.values || [];
+      var container = document.getElementById('groupDetail');
+      if (!container) return;
+
+      var html = '<div class="card" style="margin-top: 20px; border: 2px solid var(--accent);">' +
+        '<h3><i class="fas fa-info-circle"></i> Group ' + escapeHtml(values[1] || '') + ' Details</h3>';
+      
+      html += '<div class="grid grid-2">';
+      html += '<div class="field"><label>Group ID</label><input type="text" id="groupDetailId" value="' + escapeHtml(values[0] || '') + '"></div>';
+      html += '<div class="field"><label>Members (IDs)</label><textarea id="groupDetailMembers" rows="2">' + escapeHtml(values[6] || '') + '</textarea></div>';
+      html += '</div>';
+      
+      html += '<div class="grid grid-2" style="margin-top: 15px;">';
+      html += '<div class="field"><label>Place</label><select id="groupDetailPlace">' +
+        '<option value="">-- Select --</option>' +
+        '<option value="1st" ' + (values[7] === '1st' ? 'selected' : '') + '>1st Place</option>' +
+        '<option value="2nd" ' + (values[7] === '2nd' ? 'selected' : '') + '>2nd Place</option>' +
+        '<option value="3rd" ' + (values[7] === '3rd' ? 'selected' : '') + '>3rd Place</option>' +
+        '<option value="4th" ' + (values[7] === '4th' ? 'selected' : '') + '>4th Place</option>' +
+        '<option value="5th" ' + (values[7] === '5th' ? 'selected' : '') + '>5th Place</option>' +
+        '</select></div>';
+      html += '<div class="field"><label>Score</label><input type="text" id="groupDetailScore" value="' + escapeHtml(values[8] || '') + '"></div>';
+      html += '</div>';
+      
+      html += '<div class="grid grid-2" style="margin-top: 15px;">';
+      html += '<div class="field"><label>Demerits</label><input type="text" id="groupDetailDemerits" value="' + escapeHtml(values[10] || '') + '"></div>';
+      html += '<div class="field"><label>Status</label><select id="groupDetailStatus">' +
+        '<option value="open" ' + ((values[9] || '').toLowerCase() === 'open' ? 'selected' : '') + '>Open</option>' +
+        '<option value="closed" ' + ((values[9] || '').toLowerCase() === 'closed' ? 'selected' : '') + '>Closed</option>' +
+        '</select></div>';
+      html += '</div>';
+      
+      html += '<div class="toolbar toolbar-right">' +
+        '<button class="btn btn-success" onclick="saveGroupDetail(' + rowNumber + ',' + JSON.stringify(values[4]) + ',' + JSON.stringify(values[3]) + ')">' +
+        '<i class="fas fa-save"></i> Save & Record Scores</button></div>';
+      
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    function saveGroupDetail(rowNumber, activityNumber, period) {
+      if (!canEdit()) {
+        showError('You are authorized to view only and cannot save edits.');
+        return;
+      }
+
+      var link = document.getElementById('groupDatabase').value;
+      if (!link) {
+        showError('Database not selected.');
+        return;
+      }
+
+      var updates = {
+        groupId: document.getElementById('groupDetailId').value,
+        members: document.getElementById('groupDetailMembers').value,
+        place: document.getElementById('groupDetailPlace').value,
+        scores: document.getElementById('groupDetailScore').value,
+        demerits: document.getElementById('groupDetailDemerits').value,
+        isClosed: document.getElementById('groupDetailStatus').value
+      };
+
+      showFlash('Saving group...', false);
+
+      google.script.run
+        .withSuccessHandler(function() {
+          showFlash('Group saved successfully!', false);
+          
+          // Save scores to student records
+          if (updates.scores) {
+            var memberIds = (updates.members || '').match(/[A-Za-z0-9\-]+/g) || [];
+            var payload = memberIds.map(function(id) {
+              return { studentId: id, values: [updates.scores] };
+            });
+            
+            google.script.run
+              .withSuccessHandler(function() {
+                showFlash('Group and student scores saved!', false);
+              })
+              .saveGroupResultScores(link, period, parseInt(activityNumber, 10), payload);
+          }
+          
+          loadGroupNotifications();
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to save: ' + (err.message || err));
+        })
+        .updateGroupDatabaseRow(link, rowNumber, updates);
+    }
+
+    // ==================== SUBJECTS ====================
+
+    // *** ADDED: Select database for Subjects tab and auto-load settings ***
+    function selectSubjectDatabase() {
+      var link = document.getElementById('subjectDatabase').value;
+      var statusEl = document.getElementById('subjectConfigStatus');
+      if (!link) {
+        if (statusEl) statusEl.innerHTML = '';
+        return;
+      }
+      loadSubjectConfig();
+    }
+
+    // *** ADDED: Load saved settings from the database and populate all Subject fields ***
+    function loadSubjectConfig() {
+      var link = document.getElementById('subjectDatabase').value;
+      var statusEl = document.getElementById('subjectConfigStatus');
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+
+      showFlash('Loading subject settings...', false);
+
+      google.script.run
+        .withSuccessHandler(function(config) {
+          if (!config) {
+            showError('No configuration data returned.');
+            return;
+          }
+
+          // Populate Grading Weights
+          var w = config.weights || {};
+          document.getElementById('weightMidtermCollective').value = w.midtermCollective || '';
+          document.getElementById('weightFinalInitial').value = w.finalCollectiveInitial || '';
+          document.getElementById('weightFinalFinal').value = w.finalCollectiveFinal || '';
+          document.getElementById('weightMidtermExam').value = w.midtermExam || '';
+          document.getElementById('weightFinalExam').value = w.finalExam || '';
+          document.getElementById('passMidterm').value = w.passMidterm || '';
+          document.getElementById('passInitial').value = w.passInitial || '';
+          document.getElementById('passFinal').value = w.passFinal || '';
+          document.getElementById('passOverall').value = w.overallPass || '';
+
+          // Populate Midterm Exam Types
+          var mt = config.examTypes ? config.examTypes.midterm : [];
+          for (var i = 0; i < 5; i++) {
+            var slot = mt[i] || {};
+            document.getElementById('midtermType' + (i + 1)).value = slot.type || '';
+            document.getElementById('midtermScore' + (i + 1)).value = slot.score || '';
+          }
+
+          // Populate Final Exam Types
+          var ft = config.examTypes ? config.examTypes.final : [];
+          for (var j = 0; j < 5; j++) {
+            var fslot = ft[j] || {};
+            document.getElementById('finalType' + (j + 1)).value = fslot.type || '';
+            document.getElementById('finalScore' + (j + 1)).value = fslot.score || '';
+          }
+
+          if (statusEl) {
+            statusEl.innerHTML = '<div class="alert alert-success" style="margin-top: 12px;">' +
+              '<i class="fas fa-check-circle"></i>' +
+              '<div><strong>Settings loaded successfully.</strong> All fields are now showing the current saved values from the database.</div>' +
+              '</div>';
+          }
+
+          showFlash('Subject settings loaded!', false);
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to load settings: ' + (err.message || err));
+          if (statusEl) {
+            statusEl.innerHTML = '<div class="alert alert-danger" style="margin-top: 12px;">' +
+              '<i class="fas fa-exclamation-circle"></i>' +
+              '<div>Failed to load settings: ' + escapeHtml(err.message || String(err)) + '</div>' +
+              '</div>';
+          }
+        })
+        .getSubjectConfig(link);
+    }
+
+    function saveSubjectWeights() {
+      if (!canEdit()) {
+        showError('You are authorized to view only and cannot save edits.');
+        return;
+      }
+
+      // *** CHANGED: now uses subjectDatabase instead of sectionDatabase ***
+      var link = document.getElementById('subjectDatabase').value;
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+
+      var payload = {
+        midtermCollective: document.getElementById('weightMidtermCollective').value,
+        finalCollectiveInitial: document.getElementById('weightFinalInitial').value,
+        finalCollectiveFinal: document.getElementById('weightFinalFinal').value,
+        midtermExam: document.getElementById('weightMidtermExam').value,
+        finalExam: document.getElementById('weightFinalExam').value,
+        passMidterm: document.getElementById('passMidterm').value,
+        passInitial: document.getElementById('passInitial').value,
+        passFinal: document.getElementById('passFinal').value,
+        overallPass: document.getElementById('passOverall').value
+      };
+
+      showFlash('Saving weights...', false);
+
+      google.script.run
+        .withSuccessHandler(function() {
+          // *** ADDED: reload after save to confirm data was written ***
+          showFlash('Grading weights saved! Verifying...', false);
+          loadSubjectConfig();
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to save weights: ' + (err.message || err));
+        })
+        .saveGradingWeights(link, payload);
+    }
+
+    function saveExamTypes(side) {
+      if (!canEdit()) {
+        showError('You are authorized to view only and cannot save edits.');
+        return;
+      }
+
+      // *** CHANGED: now uses subjectDatabase instead of sectionDatabase ***
+      var link = document.getElementById('subjectDatabase').value;
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+
+      var prefix = side === 'midterm' ? 'midterm' : 'final';
+      var types = [];
+      var scores = [];
+
+      for (var i = 1; i <= 5; i++) {
+        var typeEl = document.getElementById(prefix + 'Type' + i);
+        var scoreEl = document.getElementById(prefix + 'Score' + i);
+        types.push(typeEl ? typeEl.value : '');
+        scores.push(scoreEl ? scoreEl.value : '');
+      }
+
+      showFlash('Saving exam types...', false);
+
+      google.script.run
+        .withSuccessHandler(function() {
+          // *** ADDED: reload after save to confirm data was written ***
+          showFlash((side === 'midterm' ? 'Midterm' : 'Final') + ' exam types saved! Verifying...', false);
+          loadSubjectConfig();
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to save exam types: ' + (err.message || err));
+        })
+        .saveExamTypes(link, side, types, scores);
+    }
+
+    // ==================== SECTIONS ====================
+    function selectSectionDatabase() {
+      var link = document.getElementById('sectionDatabase').value;
+      state.currentDb = state.databases.find(function(db) { return db.link === link; });
+    }
+
+    function renderSectionPreview() {
+      var link = document.getElementById('sectionDatabase').value;
+      var section = document.getElementById('sectionFilter').value;
+      
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+
+      showFlash('Loading grades...', false);
+
+      google.script.run
+        .withSuccessHandler(function(data) {
+          renderSectionGrades(data, section);
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to load grades: ' + (err.message || err));
+        })
+        .getSectionGrades(link, section);
+    }
+
+    function renderSectionGrades(data, section) {
+      var container = document.getElementById('sectionPreview');
+      if (!container) return;
+
+      if (!data || !data.students || !data.students.length) {
+        container.innerHTML = '<div class="alert alert-warning">' +
+          '<i class="fas fa-users-slash"></i>' +
+          '<div>No students found' + (section ? ' for section ' + section : '') + '.</div></div>';
+        return;
+      }
+
+      var html = '<div class="alert alert-success">' +
+        '<i class="fas fa-check-circle"></i>' +
+        '<div><strong>Grades Loaded</strong><br>' + data.students.length + ' student(s) found.</div></div>';
+
+      html += '<div style="overflow-x: auto;"><table style="min-width: 1200px;">' +
+        '<thead><tr>' +
+        '<th>#</th><th>Student ID</th><th>Thai Name</th><th>English Name</th>' +
+        '<th>Section</th><th>Class</th>' +
+        '<th>Midterm Total</th><th>Midterm Eq</th>' +
+        '<th>Final Init</th><th>Final Init Eq</th>' +
+        '<th>Final Final</th><th>Final Final Eq</th>' +
+        '<th>Exam Total</th><th>Exam Eq</th>' +
+        '<th>Overall</th><th>Result</th>' +
+        '</tr></thead><tbody>';
+
+      data.students.forEach(function(s, idx) {
+        var resultClass = (s.result || '').toLowerCase().indexOf('pass') >= 0 ? 'tag-success' : 'tag-danger';
+        html += '<tr>' +
+          '<td>' + (idx + 1) + '</td>' +
+          '<td>' + escapeHtml(s.studentId) + '</td>' +
+          '<td>' + escapeHtml(s.thaiName) + '</td>' +
+          '<td>' + escapeHtml(s.englishName) + '</td>' +
+          '<td>' + escapeHtml(s.section) + '</td>' +
+          '<td>' + escapeHtml(s.classNumber) + '</td>' +
+          '<td>' + escapeHtml(s.midtermTotal || '-') + '</td>' +
+          '<td>' + escapeHtml(s.midtermEquivalent || '-') + '</td>' +
+          '<td>' + escapeHtml(s.finalInitialTotal || '-') + '</td>' +
+          '<td>' + escapeHtml(s.finalInitialEquivalent || '-') + '</td>' +
+          '<td>' + escapeHtml(s.finalFinalTotal || '-') + '</td>' +
+          '<td>' + escapeHtml(s.finalFinalEquivalent || '-') + '</td>' +
+          '<td>' + escapeHtml(s.finalExamTotal || '-') + '</td>' +
+          '<td>' + escapeHtml(s.finalExamEquivalent || '-') + '</td>' +
+          '<td>' + escapeHtml(s.overallTotal || '-') + '</td>' +
+          '<td><span class="tag ' + resultClass + '">' + escapeHtml(s.result || '-') + '</span></td>' +
+          '</tr>';
+      });
+
+      html += '</tbody></table></div>';
+      container.innerHTML = html;
+    }
+
+    // ==================== PASS/FAIL LIST ====================
+    function selectPassDatabase() {
+      var link = document.getElementById('passDatabase').value;
+      state.currentDb = state.databases.find(function(db) { return db.link === link; });
+    }
+
+    function renderPassFailList() {
+      var link = document.getElementById('passDatabase').value;
+      var searchId = document.getElementById('passSearchId').value;
+      
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+
+      showFlash('Loading pass/fail list...', false);
+
+      google.script.run
+        .withSuccessHandler(function(students) {
+          renderPassFailTable(students);
+        })
+        .withFailureHandler(function(err) {
+          showError('Failed to load list: ' + (err.message || err));
+        })
+        .getPassFailList(link, searchId);
+    }
+
+    function renderPassFailTable(students) {
+      var container = document.getElementById('passFailList');
+      if (!container) return;
+
+      if (!students || !students.length) {
+        container.innerHTML = '<div class="alert alert-info">' +
+          '<i class="fas fa-inbox"></i>' +
+          '<div>No students found.</div></div>';
+        return;
+      }
+
+      var passCount = 0;
+      var failCount = 0;
+
+      students.forEach(function(s) {
+        if ((s.finalResult || '').toLowerCase().indexOf('pass') >= 0) passCount++;
+        else failCount++;
+      });
+
+      var html = '<div class="grid grid-3" style="margin-bottom: 20px;">' +
+        '<div class="tag tag-success"><i class="fas fa-check-circle"></i> Passed: ' + passCount + '</div>' +
+        '<div class="tag tag-danger"><i class="fas fa-times-circle"></i> Failed: ' + failCount + '</div>' +
+        '<div class="tag tag-primary"><i class="fas fa-users"></i> Total: ' + students.length + '</div>' +
+        '</div>';
+
+      html += '<div class="table-container"><table>' +
+        '<thead><tr>' +
+        '<th>#</th><th>Student ID</th><th>English Name</th><th>Thai Name</th>' +
+        '<th>Section</th><th>Class</th><th>Overall</th><th>Result</th>' +
+        '</tr></thead><tbody>';
+
+      students.forEach(function(s, idx) {
+        var isPass = (s.finalResult || '').toLowerCase().indexOf('pass') >= 0;
+        var tagClass = isPass ? 'tag-success' : 'tag-danger';
+        
+        html += '<tr>' +
+          '<td>' + (idx + 1) + '</td>' +
+          '<td>' + escapeHtml(s.studentId) + '</td>' +
+          '<td>' + escapeHtml(s.englishName) + '</td>' +
+          '<td>' + escapeHtml(s.thaiName) + '</td>' +
+          '<td>' + escapeHtml(s.section) + '</td>' +
+          '<td>' + escapeHtml(s.classNumber) + '</td>' +
+          '<td>' + escapeHtml(s.overallTotal || '-') + '</td>' +
+          '<td><span class="tag ' + tagClass + '">' + escapeHtml(s.finalResult || '-') + '</span></td>' +
+          '</tr>';
+      });
+
+      html += '</tbody></table></div>';
+      container.innerHTML = html;
+    }
+
+    // ==================== DOWNLOAD FUNCTIONS ====================
+    function downloadFile(content, filename, mimeType) {
+      var blob = new Blob([content], { type: mimeType });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function downloadAllGradesExcel() {
+      var link = document.getElementById('sectionDatabase').value;
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+
+      showFlash('Generating Excel file...', false);
+
+      google.script.run
+        .withSuccessHandler(function(csv) {
+          downloadFile(csv, 'all-grades.csv', 'text/csv;charset=utf-8');
+          showFlash('Excel file downloaded!', false);
+        })
+        .withFailureHandler(function(err) {
+          showError('Download failed: ' + (err.message || err));
+        })
+        .downloadAllGradesExcel(link);
+    }
+
+    function downloadSectionExcel() {
+      var link = document.getElementById('sectionDatabase').value;
+      var section = document.getElementById('exportSection').value;
+      
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+      if (!section) {
+        showError('Please enter a section number for download.');
+        return;
+      }
+
+      showFlash('Generating Excel file...', false);
+
+      google.script.run
+        .withSuccessHandler(function(csv) {
+          downloadFile(csv, 'section-' + section + '-grades.csv', 'text/csv;charset=utf-8');
+          showFlash('Excel file downloaded!', false);
+        })
+        .withFailureHandler(function(err) {
+          showError('Download failed: ' + (err.message || err));
+        })
+        .downloadSectionExcel(link, section);
+    }
+
+    function downloadStudentExcel() {
+      var link = document.getElementById('sectionDatabase').value;
+      var studentId = document.getElementById('exportStudentId').value;
+      
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+      if (!studentId) {
+        showError('Please enter a student ID for download.');
+        return;
+      }
+
+      showFlash('Generating Excel file...', false);
+
+      google.script.run
+        .withSuccessHandler(function(csv) {
+          downloadFile(csv, 'student-' + studentId + '-report.csv', 'text/csv;charset=utf-8');
+          showFlash('Excel file downloaded!', false);
+        })
+        .withFailureHandler(function(err) {
+          showError('Download failed: ' + (err.message || err));
+        })
+        .downloadAllGradesCsv(link);
+    }
+
+    function downloadAllGradesPDF() {
+      var link = document.getElementById('sectionDatabase').value;
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+
+      showFlash('Generating PDF...', false);
+
+      google.script.run
+        .withSuccessHandler(function(html) {
+          var win = window.open('', '_blank');
+          win.document.write(html);
+          win.document.close();
+          win.print();
+          showFlash('PDF ready to print!', false);
+        })
+        .withFailureHandler(function(err) {
+          showError('PDF failed: ' + (err.message || err));
+        })
+        .generateAllGradesPDFContent(link);
+    }
+
+    function downloadSectionPDF() {
+      var link = document.getElementById('sectionDatabase').value;
+      var section = document.getElementById('exportSection').value;
+      
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+      if (!section) {
+        showError('Please enter a section number for download.');
+        return;
+      }
+
+      showFlash('Generating PDF...', false);
+
+      google.script.run
+        .withSuccessHandler(function(html) {
+          var win = window.open('', '_blank');
+          win.document.write(html);
+          win.document.close();
+          win.print();
+          showFlash('PDF ready to print!', false);
+        })
+        .withFailureHandler(function(err) {
+          showError('PDF failed: ' + (err.message || err));
+        })
+        .generateSectionPDFContent(link, section);
+    }
+
+    function downloadStudentPDF() {
+      var link = document.getElementById('sectionDatabase').value;
+      var studentId = document.getElementById('exportStudentId').value;
+      
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+      if (!studentId) {
+        showError('Please enter a student ID for download.');
+        return;
+      }
+
+      showFlash('Generating PDF...', false);
+
+      google.script.run
+        .withSuccessHandler(function(html) {
+          var win = window.open('', '_blank');
+          win.document.write(html);
+          win.document.close();
+          win.print();
+          showFlash('PDF ready to print!', false);
+        })
+        .withFailureHandler(function(err) {
+          showError('PDF failed: ' + (err.message || err));
+        })
+        .generateStudentPDFContent(link, studentId);
+    }
+
+    function downloadPassFailPDF() {
+      var link = document.getElementById('passDatabase').value;
+      if (!link) {
+        showError('Please select a database first.');
+        return;
+      }
+
+      showFlash('Generating PDF...', false);
+
+      google.script.run
+        .withSuccessHandler(function(html) {
+          var win = window.open('', '_blank');
+          win.document.write(html);
+          win.document.close();
+          win.print();
+          showFlash('PDF ready to print!', false);
+        })
+        .withFailureHandler(function(err) {
+          showError('PDF failed: ' + (err.message || err));
+        })
+        .generatePassFailPDFContent(link);
+    }
+
+  </script>
+</body>
+</html>
+
+

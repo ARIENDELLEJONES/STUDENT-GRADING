@@ -1,0 +1,786 @@
+/* ============================================
+   STUDENT ACADEMIC PORTAL — STYLES
+   Modern educational theme with dark/light mode
+   ============================================ */
+ 
+/* ---------- CSS Custom Properties ---------- */
+:root {
+  /* Brand palette */
+  --blue: #4f6df5;
+  --purple: #7c5cfc;
+  --teal: #14b8a6;
+  --orange: #f59e0b;
+  --pink: #ec4899;
+  --green: #22c55e;
+  --red: #ef4444;
+ 
+  /* Font */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+ 
+  /* Transition */
+  --tr: 0.25s ease;
+}
+ 
+/* ---------- Light Theme ---------- */
+[data-theme="light"] {
+  --bg: #f0f4ff;
+  --bg2: #e8edff;
+  --surface: #ffffff;
+  --surface2: #f7f8fc;
+  --border: #e2e6f0;
+  --text: #1e293b;
+  --text2: #64748b;
+  --text3: #94a3b8;
+  --primary: #4f6df5;
+  --primary-hover: #3b56d9;
+  --primary-light: rgba(79, 109, 245, 0.1);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.08);
+  --hero-gradient: linear-gradient(135deg, #4f6df5 0%, #7c5cfc 50%, #a78bfa 100%);
+  --table-header: #4f6df5;
+  --table-header-text: #ffffff;
+  --table-stripe: #f8f9ff;
+  --pass-bg: rgba(34, 197, 94, 0.08);
+  --pass-border: #22c55e;
+  --fail-bg: rgba(239, 68, 68, 0.08);
+  --fail-border: #ef4444;
+  --input-bg: #f7f8fc;
+}
+ 
+/* ---------- Dark Theme ---------- */
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --bg2: #1a2340;
+  --surface: #1e293b;
+  --surface2: #263048;
+  --border: #334155;
+  --text: #f1f5f9;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --primary: #6d8aff;
+  --primary-hover: #5a74e8;
+  --primary-light: rgba(109, 138, 255, 0.15);
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.4);
+  --hero-gradient: linear-gradient(135deg, #3b56d9 0%, #6344c9 50%, #7c5cfc 100%);
+  --table-header: #334766;
+  --table-header-text: #e2e8f0;
+  --table-stripe: #263048;
+  --pass-bg: rgba(34, 197, 94, 0.12);
+  --pass-border: #22c55e;
+  --fail-bg: rgba(239, 68, 68, 0.12);
+  --fail-border: #ef4444;
+  --input-bg: #263048;
+}
+ 
+/* ---------- Reset & Base ---------- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+ 
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+ 
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background var(--tr), color var(--tr);
+  line-height: 1.6;
+}
+ 
+/* ---------- Utility ---------- */
+.hidden { display: none !important; }
+ 
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+ 
+/* ---------- Theme Toggle ---------- */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  transition: all var(--tr);
+}
+ 
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+}
+ 
+.theme-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+ 
+/* ---------- Cards ---------- */
+.card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: background var(--tr), border-color var(--tr), box-shadow var(--tr);
+}
+ 
+/* ---------- LOGIN ---------- */
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 40px);
+  gap: 0;
+}
+ 
+.login-hero {
+  text-align: center;
+  margin-bottom: 32px;
+}
+ 
+.hero-illustration {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 24px;
+  color: var(--primary);
+}
+ 
+.hero-svg {
+  width: 100%;
+  height: 100%;
+}
+ 
+.login-title {
+  font-size: 32px;
+  font-weight: 800;
+  background: var(--hero-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+ 
+.login-subtitle {
+  color: var(--text2);
+  font-size: 16px;
+  max-width: 360px;
+  margin: 0 auto;
+}
+ 
+.login-card {
+  width: 100%;
+  max-width: 420px;
+}
+ 
+.card-heading {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+ 
+/* ---------- Form Elements ---------- */
+.input-group {
+  margin-bottom: 18px;
+}
+ 
+.input-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+ 
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+ 
+.input-icon {
+  position: absolute;
+  left: 14px;
+  width: 18px;
+  height: 18px;
+  color: var(--text3);
+  pointer-events: none;
+}
+ 
+.input-wrapper input {
+  width: 100%;
+  padding: 13px 14px 13px 42px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 15px;
+  font-family: var(--font);
+  transition: border-color var(--tr), box-shadow var(--tr), background var(--tr);
+  outline: none;
+}
+ 
+.input-wrapper input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+ 
+.input-wrapper input::placeholder {
+  color: var(--text3);
+}
+ 
+.toggle-pass {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text3);
+  padding: 4px;
+  display: flex;
+}
+ 
+.toggle-pass svg {
+  width: 18px;
+  height: 18px;
+}
+ 
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 24px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all var(--tr);
+  text-decoration: none;
+}
+ 
+.btn-primary {
+  width: 100%;
+  background: var(--primary);
+  color: #fff;
+}
+ 
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 109, 245, 0.3);
+}
+ 
+.btn-ghost {
+  width: 100%;
+  background: transparent;
+  color: var(--text2);
+  font-size: 14px;
+  padding: 10px;
+}
+ 
+.btn-ghost:hover {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+ 
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+ 
+.btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+ 
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+ 
+.btn-danger:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: var(--fail-bg);
+}
+ 
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+ 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+ 
+.message-area {
+  margin-top: 16px;
+  text-align: center;
+}
+ 
+.msg-error {
+  color: var(--red);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px;
+  background: var(--fail-bg);
+  border-radius: 10px;
+}
+ 
+.msg-success {
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px;
+  background: var(--pass-bg);
+  border-radius: 10px;
+}
+ 
+/* ---------- DASHBOARD Top Bar ---------- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+ 
+.topbar-title {
+  font-size: 24px;
+  font-weight: 700;
+  background: var(--hero-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+ 
+.topbar-right {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+ 
+/* ---------- Student Info Grid ---------- */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+ 
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+}
+ 
+.info-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+ 
+.info-card-icon svg {
+  width: 22px;
+  height: 22px;
+  color: var(--accent, var(--primary));
+  stroke: var(--accent, var(--primary));
+}
+ 
+.info-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text3);
+  margin-bottom: 2px;
+}
+ 
+.info-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+ 
+/* ---------- Section Cards (Scores) ---------- */
+.section-card {
+  margin-bottom: 20px;
+}
+ 
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+ 
+.section-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+ 
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+ 
+/* ---------- Tables ---------- */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+ 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+ 
+thead th {
+  background: var(--table-header);
+  color: var(--table-header-text);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+ 
+thead th:first-child {
+  border-radius: 11px 0 0 0;
+}
+ 
+thead th:last-child {
+  border-radius: 0 11px 0 0;
+}
+ 
+tbody td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+ 
+tbody tr:nth-child(even) {
+  background: var(--table-stripe);
+}
+ 
+tbody tr:last-child td {
+  border-bottom: none;
+}
+ 
+tbody td:last-child {
+  font-weight: 600;
+}
+ 
+/* ---------- Summary Box ---------- */
+.summary-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+ 
+.summary-item {
+  background: var(--surface2);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+ 
+.summary-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text3);
+}
+ 
+.summary-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+ 
+/* ---------- Status Banner ---------- */
+.status-banner {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+ 
+.status-pass {
+  background: var(--pass-bg);
+  border: 1.5px solid var(--pass-border);
+  color: var(--green);
+}
+ 
+.status-fail {
+  background: var(--fail-bg);
+  border: 1.5px solid var(--fail-border);
+  color: var(--red);
+}
+ 
+/* ---------- Final Grade Card ---------- */
+.final-grade-card {
+  text-align: center;
+  padding: 32px 24px;
+  margin-bottom: 20px;
+}
+ 
+.final-grade-label {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+ 
+.final-grade-value {
+  font-size: 48px;
+  font-weight: 800;
+  background: var(--hero-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+ 
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .container { padding: 12px; }
+ 
+  .login-title { font-size: 26px; }
+ 
+  .hero-illustration { width: 120px; height: 120px; }
+ 
+  .topbar { padding: 16px; }
+  .topbar-title { font-size: 20px; }
+ 
+  .info-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+ 
+  table { font-size: 13px; }
+ 
+  thead th, tbody td { padding: 8px 10px; }
+ 
+  .summary-box {
+    grid-template-columns: 1fr 1fr;
+  }
+ 
+  .final-grade-value { font-size: 36px; }
+}
+ 
+@media (max-width: 480px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+ 
+  .topbar-right {
+    width: 100%;
+  }
+ 
+  .topbar-right .btn {
+    flex: 1;
+  }
+ 
+  .summary-box {
+    grid-template-columns: 1fr;
+  }
+}
+ 
+/* ============================================
+   PRINT STYLES — 1/4 A4 Bond Paper
+   A4 = 210mm x 297mm
+   1/4 A4 = 148.5mm x 105mm (landscape A6)
+   ============================================ */
+@media print {
+  /* Hide everything except print container */
+  body > *:not(.print-container) {
+    display: none !important;
+  }
+ 
+  .print-container {
+    display: block !important;
+  }
+ 
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 7pt;
+    line-height: 1.3;
+  }
+ 
+  @page {
+    size: 148.5mm 105mm;
+    margin: 4mm;
+  }
+ 
+  .print-container {
+    width: 140.5mm;
+    min-height: auto;
+    padding: 0;
+    page-break-inside: avoid;
+  }
+ 
+  .print-header {
+    text-align: center;
+    border-bottom: 1.5px solid #333;
+    padding-bottom: 3mm;
+    margin-bottom: 3mm;
+  }
+ 
+  .print-header h1 {
+    font-size: 11pt;
+    font-weight: 800;
+    margin-bottom: 1mm;
+    color: #222;
+  }
+ 
+  .print-student-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1mm 4mm;
+    margin-bottom: 3mm;
+    font-size: 7pt;
+  }
+ 
+  .print-student-info div {
+    display: flex;
+    gap: 2mm;
+  }
+ 
+  .print-student-info .psi-label {
+    font-weight: 700;
+    color: #333;
+  }
+ 
+  .print-scores-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2mm;
+    font-size: 6.5pt;
+  }
+ 
+  .print-scores-table th {
+    background: #333 !important;
+    color: #fff !important;
+    padding: 1.5mm 2mm;
+    text-align: left;
+    font-weight: 600;
+    font-size: 6pt;
+    text-transform: uppercase;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+ 
+  .print-scores-table td {
+    padding: 1mm 2mm;
+    border-bottom: 0.5px solid #ddd;
+  }
+ 
+  .print-scores-table tr:nth-child(even) td {
+    background: #f5f5f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+ 
+  .print-summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1mm 0;
+    font-size: 7pt;
+    border-top: 1px solid #ccc;
+    margin-top: 1mm;
+  }
+ 
+  .print-summary-row strong {
+    font-weight: 700;
+  }
+ 
+  .print-final-grade {
+    text-align: center;
+    margin-top: 3mm;
+    padding-top: 2mm;
+    border-top: 1.5px solid #333;
+  }
+ 
+  .print-final-grade span {
+    font-size: 14pt;
+    font-weight: 800;
+  }
+ 
+  .print-section-title {
+    font-size: 7.5pt;
+    font-weight: 700;
+    margin: 2mm 0 1mm;
+    color: #222;
+  }
+}
+ 
+/* Hidden print container on screen */
+.print-container {
+  display: none;
+}

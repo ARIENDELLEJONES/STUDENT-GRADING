@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Academic Portal</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+ 
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <span class="theme-icon" id="themeIcon">&#9790;</span>
+  </button>
+ 
+  <div class="container">
+ 
+    <!-- LOGIN CARD -->
+    <div id="loginCard" class="login-wrapper">
+      <div class="login-hero">
+        <div class="hero-illustration">
+          <svg viewBox="0 0 200 200" class="hero-svg">
+            <circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="2" opacity="0.2"/>
+            <circle cx="100" cy="100" r="70" fill="none" stroke="currentColor" stroke-width="2" opacity="0.15"/>
+            <circle cx="100" cy="100" r="50" fill="none" stroke="currentColor" stroke-width="2" opacity="0.1"/>
+            <!-- Book icon -->
+            <rect x="65" y="70" width="70" height="55" rx="4" fill="currentColor" opacity="0.15"/>
+            <rect x="70" y="75" width="28" height="45" rx="2" fill="currentColor" opacity="0.3"/>
+            <rect x="102" y="75" width="28" height="45" rx="2" fill="currentColor" opacity="0.25"/>
+            <line x1="100" y1="75" x2="100" y2="120" stroke="currentColor" stroke-width="2" opacity="0.4"/>
+            <!-- Graduation cap -->
+            <polygon points="100,50 130,65 100,75 70,65" fill="currentColor" opacity="0.35"/>
+            <line x1="130" y1="65" x2="130" y2="80" stroke="currentColor" stroke-width="2" opacity="0.35"/>
+            <circle cx="130" cy="82" r="3" fill="currentColor" opacity="0.35"/>
+          </svg>
+        </div>
+        <h1 class="login-title">Student Academic Portal</h1>
+        <p class="login-subtitle">Access your grades, track your progress, and achieve your goals.</p>
+      </div>
+ 
+      <div class="login-card card">
+        <h2 class="card-heading">Sign In</h2>
+        <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
+          <div class="input-group">
+            <label for="username">Student ID</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <input type="text" id="username" placeholder="Enter your Student ID" required autocomplete="username">
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+              <button type="button" class="toggle-pass" onclick="togglePassword()" aria-label="Show password">
+                <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="loginBtn">
+            <span id="loginBtnText">Sign In</span>
+            <span id="loginSpinner" class="spinner hidden"></span>
+          </button>
+        </form>
+        <button class="btn btn-ghost" onclick="requestPassword()">Forgot Password?</button>
+        <div id="message" class="message-area"></div>
+      </div>
+    </div>
+ 
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="hidden">
+ 
+      <!-- Top Bar -->
+      <header class="topbar card">
+        <div class="topbar-left">
+          <h1 class="topbar-title">Academic Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-outline btn-sm" onclick="printGrades()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print Grades
+          </button>
+          <button class="btn btn-outline btn-sm btn-danger" onclick="logout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out
+          </button>
+        </div>
+      </header>
+ 
+      <!-- Student Info Cards -->
+      <div class="info-grid">
+        <div class="info-card card">
+          <div class="info-card-icon" style="--accent: var(--blue);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="info-card-content">
+            <span class="info-label">Student ID</span>
+            <span class="info-value" id="studentID"></span>
+          </div>
+        </div>
+        <div class="info-card card">
+          <div class="info-card-icon" style="--accent: var(--purple);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="info-card-content">
+            <span class="info-label">Thai Name</span>
+            <span class="info-value" id="thaiName"></span>
+          </div>
+        </div>
+        <div class="info-card card">
+          <div class="info-card-icon" style="--accent: var(--teal);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <div class="info-card-content">
+            <span class="info-label">English Name</span>
+            <span class="info-value" id="englishName"></span>
+          </div>
+        </div>
+        <div class="info-card card">
+          <div class="info-card-icon" style="--accent: var(--orange);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div class="info-card-content">
+            <span class="info-label">Section</span>
+            <span class="info-value" id="section"></span>
+          </div>
+        </div>
+        <div class="info-card card">
+          <div class="info-card-icon" style="--accent: var(--pink);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="info-card-content">
+            <span class="info-label">Class</span>
+            <span class="info-value" id="studentClass"></span>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Scores Area -->
+      <div id="scoresArea"></div>
+    </div>
+ 
+  </div>
+ 
+  <!-- Print Container (hidden, used for print rendering) -->
+  <div id="printContainer" class="print-container"></div>
+ 
+  <script src="/js/app.js"></script>
+</body>
+</html>
