@@ -149,13 +149,31 @@ export default function GradeAdminDashboard({ user, onLogout, showToast }) {
           {tab === 'students' && selectedDb && (
             <div>
               <h3 style={{ marginBottom: '1rem' }}>Students — {selectedDb.name}</h3>
-              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
                 {sections.map(s => (
                   <button key={s} onClick={() => loadSectionStudents(s)}
                     className={`btn btn-sm ${selectedSection === s ? 'btn-primary' : 'btn-outline'}`}>
                     Section {s}
                   </button>
                 ))}
+                <span style={{ flex: 1 }} />
+                <button onClick={() => {
+                  const url = `/api/students/export-excel?mode=grades&databaseId=${selectedDb.id}` + (selectedSection ? `&section=${selectedSection}` : '');
+                  const a = document.createElement('a'); a.href = url; a.download = ''; document.body.appendChild(a); a.click(); a.remove();
+                }} className="btn btn-secondary btn-sm" title="Export students to Excel">Export Excel</button>
+                <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', margin: 0 }}>
+                  Import Excel
+                  <input type="file" accept=".xlsx,.xls" style={{ display: 'none' }} onChange={async (e) => {
+                    const file = e.target.files[0]; if (!file) return;
+                    const fd = new FormData(); fd.append('file', file); fd.append('mode', 'grades'); fd.append('databaseId', selectedDb.id);
+                    const token = localStorage.getItem('eduverse_token');
+                    const res = await fetch('/api/students/import-excel', { method: 'POST', body: fd, headers: token ? { Authorization: `Bearer ${token}` } : {} });
+                    const data = await res.json();
+                    showToast(data.message, data.success ? 'success' : 'error');
+                    if (data.success && selectedSection) loadSectionStudents(selectedSection);
+                    e.target.value = '';
+                  }} />
+                </label>
               </div>
               {sectionStudents.length > 0 && (
                 <div style={{ overflowX: 'auto' }}>

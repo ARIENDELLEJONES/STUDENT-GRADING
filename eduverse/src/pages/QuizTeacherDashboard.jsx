@@ -348,6 +348,30 @@ export default function QuizTeacherDashboard({ user, onLogout, showToast }) {
           {tab === 'students' && (
             <div>
               <h3 style={{ marginBottom: '1rem' }}>Student Databases</h3>
+              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                {allGradeLevels.map(gl => (
+                  <button key={gl} onClick={() => {
+                    const url = `/api/students/export-excel?mode=quiz&gradeLevel=${encodeURIComponent(gl)}`;
+                    const a = document.createElement('a'); a.href = url; a.download = ''; document.body.appendChild(a); a.click(); a.remove();
+                  }} className="btn btn-secondary btn-sm" title={`Export ${gl} to Excel`}>Export {gl}</button>
+                ))}
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', margin: 0 }}>
+                  Import Students from Excel
+                  <input type="file" accept=".xlsx,.xls" style={{ display: 'none' }} onChange={async (e) => {
+                    const file = e.target.files[0]; if (!file) return;
+                    const fd = new FormData(); fd.append('file', file); fd.append('mode', 'quiz');
+                    const token = localStorage.getItem('eduverse_token');
+                    const res = await fetch('/api/students/import-excel', { method: 'POST', body: fd, headers: token ? { Authorization: `Bearer ${token}` } : {} });
+                    const data = await res.json();
+                    showToast(data.message, data.success ? 'success' : 'error');
+                    if (data.success) loadStudentDbs();
+                    e.target.value = '';
+                  }} />
+                </label>
+                <span style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>Excel must have columns: STUDENT ID, THAI NAME, ENGLISH NAME, SECTION, CLASS NUMBER, GRADE LEVEL</span>
+              </div>
               {studentDbs.map(d => (
                 <div key={d.id} className="card" style={{ marginBottom: '0.5rem' }}>
                   <strong>{d.name}</strong> — {d.grade_level}

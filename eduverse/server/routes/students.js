@@ -1,8 +1,11 @@
 import { Router } from 'express';
+import multer from 'multer';
+import XLSX from 'xlsx';
 import db from '../db.js';
 import { invalidateCache } from '../middleware/cache.js';
 
 const router = Router();
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 // ─── Get all students (unified across both modes) ───────────────
 router.get('/', (req, res) => {
@@ -239,6 +242,128 @@ router.get('/export-text', (req, res) => {
   ].join('\t')).join('\n');
 
   res.json({ success: true, data: text, count: students.length });
+});
+
+// ─── Excel Export (.xlsx) ────────────────────────────────────────
+router.get('/export-excel', (req, res) => {
+  const { mode, databaseId, gradeLevel, section } = req.query;
+  let students = [];
+  let sheetName = 'Students';
+
+  if (mode === 'grades') {
+    let query = 'SELECT * FROM grade_students WHERE 1=1';
+    const params = [];
+    if (databaseId) { query += ' AND database_id = ?'; params.push(databaseId); }
+    if (section) { query += ' AND section = ?'; params.push(section); }
+    query += ' ORDER BY section, class_number';
+    students = db.prepare(query).all(...params);
+    sheetName = 'Grade Students';
+  } else {
+    let query = 'SELECT * FROM quiz_students WHERE 1=1';
+    const params = [];
+    if (gradeLevel) { query += ' AND grade_level = ?'; params.push(gradeLevel); }
+    if (section) { query += ' AND section = ?'; params.push(section); }
+    query += ' ORDER BY section, class_no';
+    students = db.prepare(query).all(...params);
+    sheetName = gradeLevel || 'Quiz Students';
+  }
+
+  const rows = students.map(s => ({
+    'STUDENT ID': s.student_id,
+    'THAI NAME': s.thai_name || '',
+    'ENGLISH NAME': s.english_name || '',
+    'SECTION': s.section || '',
+    'CLASS NUMBER': s.class_number || s.class_no || '',
+    'GRADE LEVEL': s.grade_level || gradeLevel || '',
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const colWidths = [
+    { wch: 15 }, { wch: 25 }, { wch: 25 }, { wch: 12 }, { wch: 14 }, { wch: 16 }
+  ];
+  ws['!cols'] = colWidths;
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+  const filename = `EDUVERSE_Students_${(gradeLevel || 'all').replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  res.send(Buffer.from(buf));
+});
+
+// ─── Excel Import (.xlsx) ────────────────────────────────────────
+router.post('/import-excel', upload.single('file'), (req, res) => {
+  if (!req.file) return res.json({ success: false, message: 'No file uploaded' });
+
+  const { mode, databaseId, gradeLevel } = req.body;
+  if (!mode) return res.json({ success: false, message: 'Mode is required (grades or quiz)' });
+
+  try {
+    const wb = XLSX.read(req.file.buffer);
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+
+    if (rows.length === 0) return res.json({ success: false, message: 'Excel file is empty' });
+
+    let imported = 0;
+    let skipped = 0;
+
+    if (mode === 'grades' || mode === 'A') {
+      if (!databaseId) return res.json({ success: false, message: 'databaseId is required for grades mode' });
+      const upsert = db.prepare(`
+        INSERT INTO grade_students (database_id, student_id, thai_name, english_name, section, class_number, password)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(database_id, student_id) DO UPDATE SET
+          thai_name=excluded.thai_name, english_name=excluded.english_name,
+          section=excluded.section, class_number=excluded.class_number
+      `);
+      const txn = db.transaction(() => {
+        for (const row of rows) {
+          const sid = String(row['STUDENT ID'] || row['student_id'] || row['Student ID'] || row['StudentID'] || row['ID'] || '').trim();
+          if (!sid) { skipped++; continue; }
+          const thai = String(row['THAI NAME'] || row['thai_name'] || row['Thai Name'] || row['ThaiName'] || '').trim();
+          const eng = String(row['ENGLISH NAME'] || row['english_name'] || row['English Name'] || row['EnglishName'] || row['Name'] || '').trim();
+          const sec = String(row['SECTION'] || row['section'] || row['Section'] || '').trim();
+          const cls = String(row['CLASS NUMBER'] || row['class_number'] || row['Class Number'] || row['ClassNumber'] || row['Class No'] || '').trim();
+          upsert.run(databaseId, sid, thai, eng, sec, cls, 'default');
+          imported++;
+        }
+      });
+      txn();
+      invalidateCache('/api/students');
+      invalidateCache('/api/grades');
+    } else if (mode === 'quiz' || mode === 'B') {
+      const upsert = db.prepare(`
+        INSERT INTO quiz_students (student_id, thai_name, english_name, section, class_no, grade_level, password)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(student_id, grade_level) DO UPDATE SET
+          thai_name=excluded.thai_name, english_name=excluded.english_name,
+          section=excluded.section, class_no=excluded.class_no
+      `);
+      const txn = db.transaction(() => {
+        for (const row of rows) {
+          const sid = String(row['STUDENT ID'] || row['student_id'] || row['Student ID'] || row['StudentID'] || row['ID'] || '').trim();
+          if (!sid) { skipped++; continue; }
+          const thai = String(row['THAI NAME'] || row['thai_name'] || row['Thai Name'] || row['ThaiName'] || '').trim();
+          const eng = String(row['ENGLISH NAME'] || row['english_name'] || row['English Name'] || row['EnglishName'] || row['Name'] || '').trim();
+          const sec = String(row['SECTION'] || row['section'] || row['Section'] || '').trim();
+          const cls = String(row['CLASS NUMBER'] || row['class_number'] || row['Class Number'] || row['ClassNumber'] || row['Class No'] || row['class_no'] || '').trim();
+          const gl = String(row['GRADE LEVEL'] || row['grade_level'] || row['Grade Level'] || row['GradeLevel'] || gradeLevel || '').trim();
+          if (!gl) { skipped++; continue; }
+          upsert.run(sid, thai, eng, sec, cls, gl, 'default');
+          imported++;
+        }
+      });
+      txn();
+      invalidateCache('/api/students');
+      invalidateCache('/api/quiz');
+    }
+
+    res.json({ success: true, message: `Imported ${imported} students, skipped ${skipped} rows`, imported, skipped });
+  } catch (e) {
+    res.json({ success: false, message: 'Failed to parse Excel file: ' + e.message });
+  }
 });
 
 export default router;
