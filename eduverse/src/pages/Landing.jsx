@@ -52,7 +52,7 @@ export default function Landing({ onLogin, showToast }) {
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '3rem', fontWeight: 800, background: 'linear-gradient(135deg, #6c5ce7, #00cec9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.5rem' }}>EDUVERSE</h1>
         <p style={{ color: 'var(--text-dim)', fontSize: '1rem' }}>Hybrid LAN + Cloud Educational Platform</p>
-        <p style={{ color: 'var(--text-dim)', fontSize: '0.8rem', marginTop: '0.3rem' }}>by Joseph Brylle D. Egay | 2026</p>
+        <p style={{ color: 'var(--text-dim)', fontSize: '0.8rem', marginTop: '0.3rem' }}>by JOSEPH BRYLLE D. EGAY | 2026</p>
       </div>
 
       {view === 'select' && (

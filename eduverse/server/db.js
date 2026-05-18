@@ -338,7 +338,7 @@ export function initDatabase() {
     -- ============================================================
     INSERT OR IGNORE INTO settings (key, value) VALUES ('app_name', 'EDUVERSE');
     INSERT OR IGNORE INTO settings (key, value) VALUES ('app_version', '1.0.0');
-    INSERT OR IGNORE INTO settings (key, value) VALUES ('author', 'Joseph Brylle D. Egay');
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('author', 'JOSEPH BRYLLE D. EGAY');
     INSERT OR IGNORE INTO settings (key, value) VALUES ('year', '2026');
     INSERT OR IGNORE INTO settings (key, value) VALUES ('lan_port', '3000');
 

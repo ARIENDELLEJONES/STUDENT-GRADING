@@ -53,7 +53,7 @@ app.get('/api/system/info', (req, res) => {
   res.json({
     appName: 'EDUVERSE',
     version: '1.0.0',
-    author: 'Joseph Brylle D. Egay',
+    author: 'JOSEPH BRYLLE D. EGAY',
     year: 2026,
     port: PORT,
     lanAddresses: addresses.map(a => `http://${a.address}:${PORT}`),
