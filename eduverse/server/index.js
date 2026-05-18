@@ -13,6 +13,7 @@ import gradesRoutes from './routes/grades.js';
 import quizRoutes from './routes/quiz.js';
 import backupRoutes from './routes/backup.js';
 import studentsRoutes from './routes/students.js';
+import livegameRoutes from './routes/livegame.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,6 +35,7 @@ app.use('/api/grades', gradesRoutes);
 app.use('/api/quiz', quizRoutes);
 app.use('/api/backup', backupRoutes);
 app.use('/api/students', studentsRoutes);
+app.use('/api/livegame', livegameRoutes);
 
 const distPath = path.join(__dirname, '..', 'dist');
 app.use(express.static(distPath));

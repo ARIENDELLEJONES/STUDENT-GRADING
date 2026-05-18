@@ -334,6 +334,50 @@ export function initDatabase() {
     );
 
     -- ============================================================
+    -- KAHOOT-STYLE LIVE GAME SESSIONS
+    -- ============================================================
+
+    CREATE TABLE IF NOT EXISTS live_games (
+      id TEXT PRIMARY KEY,
+      quiz_id TEXT NOT NULL,
+      pin TEXT NOT NULL UNIQUE,
+      host_id TEXT NOT NULL,
+      status TEXT DEFAULT 'LOBBY',
+      current_question INTEGER DEFAULT -1,
+      question_start_time TEXT DEFAULT '',
+      question_duration INTEGER DEFAULT 20,
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (quiz_id) REFERENCES quizzes(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS live_game_players (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      game_id TEXT NOT NULL,
+      student_id TEXT NOT NULL,
+      nickname TEXT DEFAULT '',
+      total_score INTEGER DEFAULT 0,
+      correct_count INTEGER DEFAULT 0,
+      streak INTEGER DEFAULT 0,
+      joined_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (game_id) REFERENCES live_games(id),
+      UNIQUE(game_id, student_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS live_game_answers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      game_id TEXT NOT NULL,
+      question_index INTEGER NOT NULL,
+      student_id TEXT NOT NULL,
+      answer TEXT DEFAULT '',
+      is_correct INTEGER DEFAULT 0,
+      time_taken REAL DEFAULT 0,
+      points_earned INTEGER DEFAULT 0,
+      answered_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (game_id) REFERENCES live_games(id),
+      UNIQUE(game_id, question_index, student_id)
+    );
+
+    -- ============================================================
     -- SEED DEFAULT DATA
     -- ============================================================
     INSERT OR IGNORE INTO settings (key, value) VALUES ('app_name', 'EDUVERSE');

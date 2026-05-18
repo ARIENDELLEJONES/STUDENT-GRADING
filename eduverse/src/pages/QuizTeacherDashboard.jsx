@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../api';
+import { KahootHostView } from './KahootGame';
 
 export default function QuizTeacherDashboard({ user, onLogout, showToast }) {
   const [tab, setTab] = useState('quizzes');
@@ -13,6 +14,7 @@ export default function QuizTeacherDashboard({ user, onLogout, showToast }) {
   const [loading, setLoading] = useState(false);
   const [gradeLevels, setGradeLevels] = useState([]);
   const [studentDbs, setStudentDbs] = useState([]);
+  const [showLiveGame, setShowLiveGame] = useState(false);
 
   // Quiz form state
   const [form, setForm] = useState({
@@ -109,7 +111,12 @@ export default function QuizTeacherDashboard({ user, onLogout, showToast }) {
     { id: 'deadlines', label: 'Deadline Requests' },
     { id: 'leaderboard', label: 'Leaderboard' },
     { id: 'students', label: 'Student DBs' },
+    { id: 'livegame', label: 'Live Game' },
   ];
+
+  if (showLiveGame) {
+    return <KahootHostView user={user} quizzes={quizzes} showToast={showToast} onBack={() => setShowLiveGame(false)} />;
+  }
 
   return (
     <div style={{ minHeight: '100vh' }}>
@@ -327,6 +334,14 @@ export default function QuizTeacherDashboard({ user, onLogout, showToast }) {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {tab === 'livegame' && (
+            <div>
+              <h3 style={{ marginBottom: '1rem' }}>Kahoot-Style Live Game</h3>
+              <p style={{ color: 'var(--text-dim)', marginBottom: '1rem' }}>Host a live quiz game where students join with a PIN and answer questions in real-time. Points are awarded based on speed and accuracy.</p>
+              <button onClick={() => setShowLiveGame(true)} className="btn btn-primary" style={{ fontSize: '1.1rem', padding: '0.8rem 2rem' }}>Start Live Game</button>
             </div>
           )}
 

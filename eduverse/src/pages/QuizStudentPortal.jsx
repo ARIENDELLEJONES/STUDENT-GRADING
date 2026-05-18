@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { api } from '../api';
+import { KahootPlayerView } from './KahootGame';
 
 export default function QuizStudentPortal({ user, onLogout, showToast }) {
   const [tab, setTab] = useState('available');
@@ -15,6 +16,7 @@ export default function QuizStudentPortal({ user, onLogout, showToast }) {
   const [loading, setLoading] = useState(false);
   const [showRetakeForm, setShowRetakeForm] = useState(null);
   const [retakeReason, setRetakeReason] = useState('');
+  const [showLiveGame, setShowLiveGame] = useState(false);
   const timerRef = useRef(null);
   const autoSaveRef = useRef(null);
 
@@ -135,6 +137,10 @@ export default function QuizStudentPortal({ user, onLogout, showToast }) {
   };
 
   const formatTime = (s) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
+
+  if (showLiveGame) {
+    return <KahootPlayerView user={user} showToast={showToast} onBack={() => setShowLiveGame(false)} />;
+  }
 
   // Active quiz view
   if (activeQuiz) {
@@ -261,6 +267,7 @@ export default function QuizStudentPortal({ user, onLogout, showToast }) {
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
           <button onClick={() => setTab('available')} className={`btn btn-sm ${tab === 'available' ? 'btn-secondary' : 'btn-outline'}`}>Available Quizzes</button>
           <button onClick={() => setTab('history')} className={`btn btn-sm ${tab === 'history' ? 'btn-secondary' : 'btn-outline'}`}>My History</button>
+          <button onClick={() => setShowLiveGame(true)} className="btn btn-sm btn-primary" style={{ background: 'linear-gradient(135deg, #6c5ce7, #00cec9)' }}>Join Live Game</button>
         </div>
 
         {tab === 'available' && (
