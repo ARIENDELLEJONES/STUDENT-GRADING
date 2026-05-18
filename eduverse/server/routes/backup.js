@@ -6,7 +6,8 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const BACKUP_DIR = path.join(__dirname, '..', '..', 'data', 'backups');
+const DATA_DIR = process.env.EDUVERSE_DATA_DIR || path.join(__dirname, '..', '..', 'data');
+const BACKUP_DIR = path.join(DATA_DIR, 'backups');
 
 if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR, { recursive: true });
 
