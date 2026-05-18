@@ -10,7 +10,7 @@ let splashWindow;
 const PORT = 3000;
 const APP_ROOT = path.join(__dirname, '..');
 
-function waitForServer(url, timeout = 30000) {
+function waitForServer(url, timeout = 45000) {
   return new Promise((resolve, reject) => {
     const start = Date.now();
     const check = () => {
@@ -30,21 +30,47 @@ function waitForServer(url, timeout = 30000) {
 }
 
 function startServer() {
-  const serverPath = path.join(APP_ROOT, 'server', 'index.js');
+  // Use start.cjs (CommonJS bootstrap) instead of index.js (ES Module)
+  // ELECTRON_RUN_AS_NODE=1 makes the Electron binary behave as plain Node.js
+  // start.cjs uses dynamic import() to load the ES module server
+  const serverPath = path.join(APP_ROOT, 'server', 'start.cjs');
   serverProcess = fork(serverPath, [], {
     cwd: APP_ROOT,
-    env: { ...process.env, NODE_ENV: 'production', PORT: String(PORT) },
+    env: {
+      ...process.env,
+      ELECTRON_RUN_AS_NODE: '1',
+      NODE_ENV: 'production',
+      PORT: String(PORT)
+    },
     silent: true
   });
-  serverProcess.stdout.on('data', (data) => console.log(`Server: ${data}`));
-  serverProcess.stderr.on('data', (data) => console.error(`Server Error: ${data}`));
-  serverProcess.on('error', (err) => console.error('Failed to start server:', err));
-  serverProcess.on('exit', (code) => {
-    console.log(`Server exited with code ${code}`);
-    if (code !== 0 && code !== null && mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.loadURL('data:text/html,' + encodeURIComponent('<html><body style="background:#0a0a1a;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0"><div style="text-align:center"><h1 style="color:#fd79a8">Server Error</h1><p>EDUVERSE server failed to start (code: ' + code + ').</p><p style="color:#888">Try restarting the application.</p></div></body></html>'));
+  serverProcess.stdout.on('data', (data) => console.log('[Server] ' + data.toString().trim()));
+  serverProcess.stderr.on('data', (data) => console.error('[Server Error] ' + data.toString().trim()));
+  serverProcess.on('error', (err) => {
+    console.error('Failed to start server process:', err);
+    showErrorInWindow('Server process failed to start: ' + err.message);
+  });
+  serverProcess.on('exit', (code, signal) => {
+    console.log('Server exited with code ' + code + ' signal ' + signal);
+    if (code !== 0 && code !== null) {
+      showErrorInWindow('Server crashed (exit code: ' + code + '). Please restart the application.');
     }
   });
+}
+
+function showErrorInWindow(message) {
+  const errorHtml = '<html><body style="background:#0a0a1a;color:#fff;font-family:Segoe UI,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0">' +
+    '<div style="text-align:center;max-width:500px;padding:2rem">' +
+    '<h1 style="color:#fd79a8;font-size:2rem;margin-bottom:1rem">Server Error</h1>' +
+    '<p style="color:#ddd;margin-bottom:1rem">' + message + '</p>' +
+    '<p style="color:#888;font-size:0.85rem">Try closing and reopening the application.</p>' +
+    '</div></body></html>';
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.loadURL('data:text/html,' + encodeURIComponent(errorHtml));
+    mainWindow.show();
+  } else if (splashWindow && !splashWindow.isDestroyed()) {
+    splashWindow.loadURL('data:text/html,' + encodeURIComponent(errorHtml));
+  }
 }
 
 function createSplashWindow() {
@@ -116,9 +142,8 @@ app.whenReady().then(async () => {
     await waitForServer('http://localhost:' + PORT + '/api/health');
     createWindow();
   } catch (err) {
-    console.error('Server failed to start:', err);
-    if (splashWindow && !splashWindow.isDestroyed()) splashWindow.close();
-    createWindow();
+    console.error('Server failed to start:', err.message);
+    showErrorInWindow('Server failed to start within 45 seconds. Try restarting the application.');
   }
 });
 
