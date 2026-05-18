@@ -12,6 +12,22 @@ router.post('/login', (req, res) => {
     return;
   }
 
+  if (mode === 'admin') {
+    if (role === 'admin') {
+      const admin = db.prepare('SELECT * FROM grade_admins WHERE user_id = ?').get(userId);
+      if (admin && admin.password === password) {
+        const token = uuidv4();
+        const expires = Date.now() + 24 * 60 * 60 * 1000;
+        db.prepare('INSERT OR REPLACE INTO sessions (token, user_type, user_id, data, expires_at) VALUES (?, ?, ?, ?, ?)')
+          .run(token, 'admin', admin.user_id, JSON.stringify({ name: admin.name, role: admin.role }), expires);
+        res.json({ success: true, token, user: { id: admin.user_id, name: admin.name, role: 'admin', mode: 'admin' } });
+        return;
+      }
+      res.json({ success: false, message: 'Invalid Admin ID or Password' });
+      return;
+    }
+  }
+
   if (mode === 'grades' || mode === 'A') {
     if (role === 'admin') {
       const admin = db.prepare('SELECT * FROM grade_admins WHERE user_id = ?').get(userId);
